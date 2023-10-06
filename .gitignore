@@ -1,0 +1,12 @@
+### Example user template template
+### Example user template
+
+# IntelliJ project files
+target/
+out/
+.idea/
+*.iml
+.DS_Store
+#.gitignore
+#pom.xml
+#src/main/resources/application.yml

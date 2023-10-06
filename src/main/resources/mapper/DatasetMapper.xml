@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.zjuvipa.mapper.DatasetMapper">
+    <select id="getUserDatasets" resultType="org.zjuvipa.entity.Dataset">
+        select *
+        from dataset
+        where username = #{username}
+    </select>
+    <select id="getUserVisibleDatasets" resultType="org.zjuvipa.entity.Dataset">
+        select *
+        from dataset
+        where (username = #{username} or dataset_isPublic = true) and username = #{searchname};
+    </select>
+    <select id="getVisibleDatasets" resultType="org.zjuvipa.entity.Dataset">
+        select *
+        from dataset
+        where username = #{username} or dataset_isPublic = true;
+    </select>
+    <select id="getAllDatasets" resultType="org.zjuvipa.entity.Dataset">
+        select *
+        from dataset;
+    </select>
+    <select id="findDatasetByUserAndName" resultType="org.zjuvipa.entity.Dataset">
+        select *
+        from dataset
+        where (username = #{param1} and dataset_name = #{param2})
+    </select>
+    <select id="blurredFindDatasetByUserAndName" resultType="org.zjuvipa.entity.Dataset">
+        select *
+        from dataset
+        where (username = #{username} or dataset_isPublic = true) and dataset_name like #{param2};
+    </select>
+    <select id="blurredFindDatasetByName" resultType="org.zjuvipa.entity.Dataset">
+        select *
+        from dataset
+        where dataset_name like #{param2};
+    </select>
+    <delete id="deleteDataset">
+        delete
+        from dataset
+        where dataset_id = #{datasetId};
+    </delete>
+    <select id="getDatasetInfo" resultType="org.zjuvipa.entity.Dataset">
+        select *
+        from dataset
+        where dataset_id = #{datasetId};
+    </select>
+    <update id="renameDataset">
+        update dataset
+        set dataset_name=#{newName}
+        where dataset_id = #{datasetId};
+    </update>
+    <insert id="createDataset">
+        insert into dataset (username, dataset_name, dataset_isPublic)
+        values (#{username}, #{datasetName}, #{isPublic});
+    </insert>
+    <select id="getPublicDatasets" resultType="org.zjuvipa.entity.Dataset">
+        select *
+        from dataset
+        where dataset_isPublic = true;
+    </select>
+    <select id="getNewDataset" resultType="org.zjuvipa.entity.Dataset">
+        select *
+        from dataset
+        where dataset_id in (select max(dataset_id)
+                             from dataset);
+    </select>
+</mapper>

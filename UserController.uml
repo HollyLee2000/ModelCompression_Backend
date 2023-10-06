@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>org.zjuvipa.controller.UserController</OriginalElement>
+  <nodes>
+    <node x="617.4000000000001" y="776.0">org.zjuvipa.service.impl.UserServiceImpl</node>
+    <node x="691.475" y="0.0">org.zjuvipa.entity.User</node>
+    <node x="573.53125" y="464.0">org.zjuvipa.mapper.UserMapper</node>
+    <node x="246.53125" y="464.0">org.zjuvipa.service.IUserService</node>
+    <node x="46.125" y="521.5">org.springframework.web.bind.annotation.RestController</node>
+    <node x="0.0" y="684.0">org.zjuvipa.controller.UserController</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="org.zjuvipa.service.impl.UserServiceImpl" target="org.zjuvipa.service.IUserService">
+      <point x="-122.80000000000001" y="-106.5" />
+      <point x="648.1" y="664.0" />
+      <point x="476.78124999999994" y="664.0" />
+      <point x="76.74999999999994" y="85.0" />
+    </edge>
+    <edge source="org.zjuvipa.controller.UserController" target="org.zjuvipa.service.IUserService">
+      <point x="107.25" y="-198.5" />
+      <point x="321.75" y="664.0" />
+      <point x="323.28125" y="664.0" />
+      <point x="-76.75" y="85.0" />
+    </edge>
+    <edge source="org.zjuvipa.controller.UserController" target="org.springframework.web.bind.annotation.RestController">
+      <point x="-107.25" y="-198.5" />
+      <point x="107.25" y="664.0" />
+      <point x="126.125" y="664.0" />
+      <point x="0.0" y="27.5" />
+    </edge>
+    <edge source="org.zjuvipa.service.IUserService" target="org.zjuvipa.entity.User">
+      <point x="-5.6843418860808015E-14" y="-85.0" />
+      <point x="400.03124999999994" y="444.0" />
+      <point x="716.225" y="444.0" />
+      <point x="-74.25" y="207.0" />
+    </edge>
+    <edge source="org.zjuvipa.mapper.UserMapper" target="org.zjuvipa.entity.User">
+      <point x="0.0" y="-85.0" />
+      <point x="727.03125" y="444.0" />
+      <point x="765.725" y="444.0" />
+      <point x="-24.75" y="207.0" />
+    </edge>
+    <edge source="org.zjuvipa.service.impl.UserServiceImpl" target="org.zjuvipa.mapper.UserMapper">
+      <point x="-61.400000000000006" y="-106.5" />
+      <point x="709.5" y="654.0" />
+      <point x="650.28125" y="654.0" />
+      <point x="-76.75" y="85.0" />
+    </edge>
+    <edge source="org.zjuvipa.service.impl.UserServiceImpl" target="org.zjuvipa.entity.User">
+      <point x="122.80000000000001" y="-106.5" />
+      <point x="893.7" y="664.0" />
+      <point x="902.03125" y="664.0" />
+      <point x="902.03125" y="434.0" />
+      <point x="864.725" y="434.0" />
+      <point x="74.25" y="207.0" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Group" zoom="1.0" x="294.0" y="401.0" />
+  <SelectedNodes />
+  <Categories>
+    <Category>Fields</Category>
+    <Category>Constructors</Category>
+    <Category>Methods</Category>
+    <Category>Properties</Category>
+    <Category>Inner Classes</Category>
+  </Categories>
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+

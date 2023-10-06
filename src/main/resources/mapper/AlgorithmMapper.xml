@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.zjuvipa.mapper.AlgorithmMapper">
+    <select id="findAlgoByName" resultType="org.zjuvipa.entity.Algorithm">
+        select * from algorithm
+        where algo_name = #{algorithmName}
+    </select>
+    <select id="searchAlgorithm" resultType="org.zjuvipa.entity.Algorithm">
+        select * from algorithm
+    </select>
+    <insert id="uploadAlgorithm">
+        insert into algorithm (username, name, score, institute, ranking, morfPath, lerfPath, pythonPath, email, info, dateTime, status)
+        values (#{username}, #{name}, #{score}, #{institute}, #{ranking}, #{morfPath}, #{lerfPath}, #{pythonPath}, #{email}, #{info}, #{dateTime}, #{status});
+    </insert>
+
+    <update id="algorithmReject" parameterType="integer">
+        UPDATE algorithm
+        SET status = 'Rejected'
+        WHERE algorithm_id = #{algorithmId}
+    </update>
+
+    <update id="algorithmApprove" parameterType="integer">
+        UPDATE algorithm
+        SET status = 'Approved'
+        WHERE algorithm_id = #{algorithmId}
+    </update>
+</mapper>
