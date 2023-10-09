@@ -1,7 +1,7 @@
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/metascore
+    url: jdbc:mysql://localhost:3306/modelcompression
 #    ?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=Asia/Shanghai
 #    username: root
 #    password: 123456
@@ -12,7 +12,7 @@ spring:
       max-file-size: 100MB
       max-request-size: 100MB
 server:
-  port: 7668
+  port: 7996
 mybatis-plus:
   mapper-locations: classpath*:/mapper/*Mapper.xml
   type-aliases-package: org.zjuvipa.entity

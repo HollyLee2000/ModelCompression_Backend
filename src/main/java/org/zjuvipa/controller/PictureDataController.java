@@ -80,7 +80,7 @@ public class PictureDataController {
         }
         System.out.println("savePath + filename: " +  savePath + filename);
 
-        return "10.214.242.155:7668/MetauserImg/"+filename;
+        return "10.214.242.155:7996/MetauserImg/"+filename;
         // return "192.168.2.55:7667/img/"+filename;
     }
 
@@ -128,7 +128,7 @@ public class PictureDataController {
         }
         System.out.println("savePath + filename: " +  savePath + filename);
 
-        return "10.214.242.155:7668/WorkSpace/data/user_upload/"+filename;
+        return "10.214.242.155:7996/WorkSpace/data/user_upload/"+filename;
         // return "192.168.2.55:7667/img/"+filename;
     }
 

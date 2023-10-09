@@ -43,15 +43,15 @@ public class PictureDataServiceImpl extends ServiceImpl<PictureDataMapper, Pictu
 
     public List<String> getAttributionPictures() {
         List<String> result = new ArrayList<>();
-        result.add("10.214.211.106:7668/img/origin.png");
-        result.add("10.214.211.106:7668/img/saliency.png");
+        result.add("10.214.211.106:7996/img/origin.png");
+        result.add("10.214.211.106:7996/img/saliency.png");
         return result;
     }
 
     public List<String> getPoolPictures(String dataset){
         List<String> result = new ArrayList<>();
         for(int i=1; i<=36; i++){
-            result.add("10.214.211.106:7668/img/" + dataset + "_sample_" + i + ".jpg");
+            result.add("10.214.211.106:7996/img/" + dataset + "_sample_" + i + ".jpg");
         }
         return result;
     }

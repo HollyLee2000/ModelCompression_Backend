@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 
 
+
 import com.google.code.kaptcha.impl.DefaultKaptcha;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -292,6 +293,30 @@ public class UserController {
             result.setData(null);
         }
         return result;
+    }
+
+    @CrossOrigin
+    @ApiOperation("查询当前ModelZoo中的信息")
+    @PostMapping("getModelZoo")
+    public String getModelZoo() throws IOException{
+        // 指定JSON文件的路径
+        String filePath = "/nfs/lhl/ModelCompression/modelzoo.json";
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+            StringBuilder jsonContent = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                jsonContent.append(line);
+            }
+            System.out.println("jsonContent.toString(): "+jsonContent.toString());
+
+            // 将JSON数据作为HTTP响应返回给前端
+            return jsonContent.toString();
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("Error reading JSON file");
+            return "Error reading JSON file";
+        }
     }
 
     @CrossOrigin

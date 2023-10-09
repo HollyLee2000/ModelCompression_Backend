@@ -187,6 +187,31 @@ public class AlgorithmController {
     }
 
     @CrossOrigin
+    @ApiOperation("调用剪枝算法")
+    @PostMapping("callPruneAlgorithm")
+    public ResultBean<CallAlgorithmRes> callPruneAlgorithm(@RequestBody CallAlgorithmReq callAlgorithmReq) throws IOException, InterruptedException {
+        System.out.println(callAlgorithmReq);
+        ResultBean<CallAlgorithmRes> result = new ResultBean<CallAlgorithmRes>();
+        String command1 = callAlgorithmReq.getModelName();
+        System.out.println("command: " + command1);
+        Process process = Runtime.getRuntime().exec(command1);
+        BufferedReader in = new BufferedReader(new InputStreamReader(process.getInputStream()));
+        List<String> lines = new ArrayList<String>();
+        String line;
+        while ((line = in.readLine()) != null) {
+            lines.add(line);
+        }
+        process.waitFor();
+        CallAlgorithmRes callAlgorithmRes = new CallAlgorithmRes();
+        callAlgorithmRes.setResult(lines);
+
+        result.setData(callAlgorithmRes);
+        result.setMsg(command1);
+        System.out.println("result:" + callAlgorithmRes);
+        return result;
+    }
+
+    @CrossOrigin
     @ApiOperation("调用算法")
     @PostMapping("callAlgorithm")
     public ResultBean<CallAlgorithmRes> callAlgorithm(@RequestBody CallAlgorithmReq callAlgorithmReq) throws IOException, InterruptedException {

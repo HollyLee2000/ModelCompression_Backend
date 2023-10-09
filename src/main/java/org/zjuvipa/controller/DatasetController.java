@@ -229,7 +229,7 @@ public class DatasetController {
 //            BufferedReader in = new BufferedReader(new InputStreamReader(process.getInputStream()));
 //            String line;
 //            while ((line = in.readLine()) != null) {
-//                lines.add("10.214.242.155:7668/img/cifar10_train/" + line);
+//                lines.add("10.214.242.155:7996/img/cifar10_train/" + line);
 //            }
 //            process.waitFor();
 ////            List<String> res = iPictureDataService.getPoolPictures("cifar");
@@ -261,7 +261,7 @@ public class DatasetController {
                 // 根据随机索引获取对应的 value 并打印
                 for (int index : indices) {
                     String value = dataMap.get(Integer.toString(index));
-                    lines.add("10.214.242.155:7668/Cifar/" + value);
+                    lines.add("10.214.242.155:7996/Cifar/" + value);
                     System.out.println(index + ": " + value);
                 }
 
@@ -294,7 +294,7 @@ public class DatasetController {
                 // 根据随机索引获取对应的 value 并打印
                 for (int index : indices) {
                     String value = dataMap.get(Integer.toString(index));
-                    lines.add("10.214.242.155:7668/originalImgNet/" + value);
+                    lines.add("10.214.242.155:7996/originalImgNet/" + value);
                     System.out.println(index + ": " + value);
                     System.out.println("呵呵");
                 }
@@ -319,7 +319,7 @@ public class DatasetController {
 //                String subfileName = subfileNames.get(subindex);
 //
 ////                System.out.println(fileName);
-//                lines.add("10.214.242.155:7668/originalImgNet/" + fileName + "/" + subfileName);
+//                lines.add("10.214.242.155:7996/originalImgNet/" + fileName + "/" + subfileName);
 //                fileNames.remove(index);
 //            }
 
@@ -329,7 +329,7 @@ public class DatasetController {
 //            BufferedReader in = new BufferedReader(new InputStreamReader(process.getInputStream()));
 //            String line;
 //            while ((line = in.readLine()) != null) {
-//                lines.add("10.214.242.155:7668/img/imagnet_train/" + line);
+//                lines.add("10.214.242.155:7996/img/imagnet_train/" + line);
 //            }
 //            process.waitFor();
 //            List<String> res = iPictureDataService.getPoolPictures("cifar");
@@ -361,7 +361,7 @@ public class DatasetController {
                 // 根据随机索引获取对应的 value 并打印
                 for (int index : indices) {
                     String value = dataMap.get(Integer.toString(index));
-                    lines.add("10.214.242.155:7668/VOC/" + value);
+                    lines.add("10.214.242.155:7996/VOC/" + value);
                     System.out.println(index + ": " + value);
                 }
 
@@ -373,7 +373,7 @@ public class DatasetController {
 //            BufferedReader in = new BufferedReader(new InputStreamReader(process.getInputStream()));
 //            String line;
 //            while ((line = in.readLine()) != null) {
-//                lines.add("10.214.242.155:7668/img/voc_train_224/" + line);
+//                lines.add("10.214.242.155:7996/img/voc_train_224/" + line);
 //            }
 //            process.waitFor();
 //            List<String> res = iPictureDataService.getPoolPictures("cifar");
@@ -403,7 +403,7 @@ public class DatasetController {
                 // 根据随机索引获取对应的 value 并打印
                 for (int index : indices) {
                     String value = dataMap.get(Integer.toString(index));
-                    lines.add("10.214.242.155:7668/cocoimg/" + value);
+                    lines.add("10.214.242.155:7996/cocoimg/" + value);
                     System.out.println(index + ": " + value);
                 }
 
@@ -417,7 +417,7 @@ public class DatasetController {
 //            BufferedReader in = new BufferedReader(new InputStreamReader(process.getInputStream()));
 //            String line;
 //            while ((line = in.readLine()) != null) {
-//                lines.add("10.214.242.155:7668/cocoimg/" + line);
+//                lines.add("10.214.242.155:7996/cocoimg/" + line);
 //            }
 //            process.waitFor();
 ////            List<String> res = iPictureDataService.getPoolPictures("cifar");
@@ -447,7 +447,7 @@ public class DatasetController {
                 // 根据随机索引获取对应的 value 并打印
                 for (int index : indices) {
                     String value = dataMap.get(Integer.toString(index));
-                    lines.add("10.214.242.155:7668/CUB/" + value);
+                    lines.add("10.214.242.155:7996/CUB/" + value);
                     System.out.println(index + ": " + value);
                 }
 
@@ -480,7 +480,7 @@ public class DatasetController {
                 // 根据随机索引获取对应的 value 并打印
                 for (int index : indices) {
                     String value = dataMap.get(Integer.toString(index));
-                    lines.add("10.214.242.155:7668/CARS/" + value);
+                    lines.add("10.214.242.155:7996/CARS/" + value);
                     System.out.println(index + ": " + value);
                 }
 
@@ -533,7 +533,7 @@ public class DatasetController {
                 // 根据随机索引获取对应的 value 并打印
                 for (int index : indices) {
                     String value = dataMap.get(Integer.toString(index));
-                    lines.add("10.214.242.155:7668/Concept/" + value);
+                    lines.add("10.214.242.155:7996/Concept/" + value);
 //                    System.out.println(index + ": " + value);
                 }
             } catch (Exception e) {
@@ -556,18 +556,18 @@ public class DatasetController {
 //        System.out.println("req: " + req);
         ResultBean<List<String>> result = new ResultBean<>();
         List<String> lines = new ArrayList<String>();
-        lines.add("10.214.242.155:7668/Cifar/0_1740.jpg");
-        lines.add("10.214.242.155:7668/Cifar/3_10557.jpg");
-        lines.add("10.214.242.155:7668/Cifar/7_18534.jpg");
-        lines.add("10.214.242.155:7668/originalImgNet/n01798484/n01798484_14557.JPEG");
-        lines.add("10.214.242.155:7668/originalImgNet/n01491361/n01491361_3683.JPEG");
-        lines.add("10.214.242.155:7668/originalImgNet/n01440764/n01440764_6628.JPEG");
-        lines.add("10.214.242.155:7668/originalVOC/2007_000648.jpg");
-        lines.add("10.214.242.155:7668/originalVOC/2007_005086.jpg");
-        lines.add("10.214.242.155:7668/originalVOC/2007_000836.jpg");
-        lines.add("10.214.242.155:7668/cocoimg/000000165012.jpg");
-        lines.add("10.214.242.155:7668/cocoimg/000000189617.jpg");
-        lines.add("10.214.242.155:7668/cocoimg/000000308175.jpg");
+        lines.add("10.214.242.155:7996/Cifar/0_1740.jpg");
+        lines.add("10.214.242.155:7996/Cifar/3_10557.jpg");
+        lines.add("10.214.242.155:7996/Cifar/7_18534.jpg");
+        lines.add("10.214.242.155:7996/originalImgNet/n01798484/n01798484_14557.JPEG");
+        lines.add("10.214.242.155:7996/originalImgNet/n01491361/n01491361_3683.JPEG");
+        lines.add("10.214.242.155:7996/originalImgNet/n01440764/n01440764_6628.JPEG");
+        lines.add("10.214.242.155:7996/originalVOC/2007_000648.jpg");
+        lines.add("10.214.242.155:7996/originalVOC/2007_005086.jpg");
+        lines.add("10.214.242.155:7996/originalVOC/2007_000836.jpg");
+        lines.add("10.214.242.155:7996/cocoimg/000000165012.jpg");
+        lines.add("10.214.242.155:7996/cocoimg/000000189617.jpg");
+        lines.add("10.214.242.155:7996/cocoimg/000000308175.jpg");
         result.setMsg("成功获得公开数据集预览图像!");
         result.setData(lines);
         return result;
@@ -589,7 +589,7 @@ public class DatasetController {
             Map<String, String> dataMap = objectMapper.readValue(jsonFile, Map.class);
             for (int index=0; index<=49891; index++) {
                 String value = dataMap.get(Integer.toString(index));
-                lines.add("10.214.242.155:7668/Cifar/" + value);
+                lines.add("10.214.242.155:7996/Cifar/" + value);
 //                System.out.println(index + ": " + value);
             }
             result.setMsg("成功获得CIFAR!");
@@ -602,7 +602,7 @@ public class DatasetController {
             Map<String, String> dataMap = objectMapper.readValue(jsonFile, Map.class);
             for (int index=0; index<=1281166; index++) {
                 String value = dataMap.get(Integer.toString(index));
-                lines.add("10.214.242.155:7668/originalImgNet/" + value);
+                lines.add("10.214.242.155:7996/originalImgNet/" + value);
 //                System.out.println(index + ": " + value);
             }
             result.setMsg("成功获得imagenet!");
@@ -620,8 +620,8 @@ public class DatasetController {
 //                File[] dirFiles = directory2.listFiles();
 //                for(File file22 : dirFiles){
 ////                    System.out.println("file22.getName(): " + file22.getName());
-//                    lines.add("10.214.242.155:7668/originalImgNet/" + file.getName() + "/" + file22.getName());
-////                    System.out.println("10.214.242.155:7668/originalImgNet/" + file.getName() + "/" + file22.getName());
+//                    lines.add("10.214.242.155:7996/originalImgNet/" + file.getName() + "/" + file22.getName());
+////                    System.out.println("10.214.242.155:7996/originalImgNet/" + file.getName() + "/" + file22.getName());
 //                }
 //            }
 //            result.setMsg("成功获得imagenet池!");
@@ -634,7 +634,7 @@ public class DatasetController {
             Map<String, String> dataMap = objectMapper.readValue(jsonFile, Map.class);
             for (int index=0; index<=1463; index++) {
                 String value = dataMap.get(Integer.toString(index));
-                lines.add("10.214.242.155:7668/originalVOC/" + value);
+                lines.add("10.214.242.155:7996/originalVOC/" + value);
 //                System.out.println(index + ": " + value);
             }
             result.setMsg("成功获得voc!");
@@ -645,7 +645,7 @@ public class DatasetController {
 //            File directory = new File(directoryPath);
 //            File[] files = directory.listFiles();
 //            for (File file : files) {
-//                lines.add("10.214.242.155:7668/originalVOC/" + file.getName());
+//                lines.add("10.214.242.155:7996/originalVOC/" + file.getName());
 ////                System.out.println(file.getName());
 //            }
 //            result.setMsg("成功获得VOC池!");
@@ -658,7 +658,7 @@ public class DatasetController {
             Map<String, String> dataMap = objectMapper.readValue(jsonFile, Map.class);
             for (int index=0; index<=118286; index++) {
                 String value = dataMap.get(Integer.toString(index));
-                lines.add("10.214.242.155:7668/originalCoCoimg/" + value);
+                lines.add("10.214.242.155:7996/originalCoCoimg/" + value);
 //                System.out.println(index + ": " + value);
             }
             result.setMsg("成功获得coco!");
@@ -668,7 +668,7 @@ public class DatasetController {
 //            File directory = new File(directoryPath);
 //            File[] files = directory.listFiles();
 //            for (File file : files) {
-//                lines.add("10.214.242.155:7668/originalCoCoimg/" + file.getName());
+//                lines.add("10.214.242.155:7996/originalCoCoimg/" + file.getName());
 ////                System.out.println(file.getName());
 //            }
 //            result.setMsg("成功获得COCO池!");
@@ -682,7 +682,7 @@ public class DatasetController {
             Map<String, String> dataMap = objectMapper.readValue(jsonFile, Map.class);
             for (int index=0; index<=11787; index++) {
                 String value = dataMap.get(Integer.toString(index));
-                lines.add("10.214.242.155:7668/CUB/" + value);
+                lines.add("10.214.242.155:7996/CUB/" + value);
 //                System.out.println(index + ": " + value);
             }
             result.setMsg("成功获得cub!");
@@ -692,7 +692,7 @@ public class DatasetController {
 //            File directory = new File(directoryPath);
 //            File[] files = directory.listFiles();
 //            for (File file : files) {
-//                lines.add("10.214.242.155:7668/originalCoCoimg/" + file.getName());
+//                lines.add("10.214.242.155:7996/originalCoCoimg/" + file.getName());
 ////                System.out.println(file.getName());
 //            }
 //            result.setMsg("成功获得COCO池!");
@@ -705,7 +705,7 @@ public class DatasetController {
             Map<String, String> dataMap = objectMapper.readValue(jsonFile, Map.class);
             for (int index=0; index<=8143; index++) {
                 String value = dataMap.get(Integer.toString(index));
-                lines.add("10.214.242.155:7668/CARS/" + value);
+                lines.add("10.214.242.155:7996/CARS/" + value);
 //                System.out.println(index + ": " + value);
             }
             result.setMsg("成功获得cars!");
@@ -715,7 +715,7 @@ public class DatasetController {
 //            File directory = new File(directoryPath);
 //            File[] files = directory.listFiles();
 //            for (File file : files) {
-//                lines.add("10.214.242.155:7668/originalCoCoimg/" + file.getName());
+//                lines.add("10.214.242.155:7996/originalCoCoimg/" + file.getName());
 ////                System.out.println(file.getName());
 //            }
 //            result.setMsg("成功获得COCO池!");
@@ -728,7 +728,7 @@ public class DatasetController {
             Map<String, String> dataMap = objectMapper.readValue(jsonFile, Map.class);
             for (int index=0; index<=25199; index++) {
                 String value = dataMap.get(Integer.toString(index));
-                lines.add("10.214.242.155:7668/NWPU/" + value);
+                lines.add("10.214.242.155:7996/NWPU/" + value);
             }
             result.setMsg("成功获得nwpu!");
             result.setData(lines);
@@ -740,7 +740,7 @@ public class DatasetController {
             Map<String, String> dataMap = objectMapper.readValue(jsonFile, Map.class);
             for (int index=0; index<=75731; index++) {
                 String value = dataMap.get(Integer.toString(index));
-                lines.add("10.214.242.155:7668/Food101/" + value);
+                lines.add("10.214.242.155:7996/Food101/" + value);
             }
             result.setMsg("成功获得food101!");
             result.setData(lines);
@@ -752,7 +752,7 @@ public class DatasetController {
             Map<String, String> dataMap = objectMapper.readValue(jsonFile, Map.class);
             for (int index=0; index<=1803460; index++) {
                 String value = dataMap.get(Integer.toString(index));
-                lines.add("10.214.242.155:7668/Place365/" + value);
+                lines.add("10.214.242.155:7996/Place365/" + value);
             }
             result.setMsg("成功获得food101!");
             result.setData(lines);
