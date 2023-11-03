@@ -3,15 +3,18 @@ package org.zjuvipa.req;
 import lombok.Data;
 
 @Data
-public class SubmitAlgorithmReq {
+public class SubmitHistoryReq {
     private String username;
-    private String name;
-    private Double score;
-    private String institute;
-    private Integer ranking;
-    private String morfPath;
-    private String lerfPath;
-    private String pythonPath;
-    private String email;
-    private String info;
+    private String modelname;
+    private String tasktype;
+    private String checkpointpath;
+    private String status;
+    private String paramschange;
+    private String flopschange;
+    private String accchange;
+    private String losschange;
+    private String prunedpath;
+    private String structurebeforepruned;
+    private String structureafterpruned;
+    private String logpath;
 }

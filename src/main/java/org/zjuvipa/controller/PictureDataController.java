@@ -158,6 +158,59 @@ public class PictureDataController {
         return result;
     }
 
+
+
+
+    public String uploadCkpt(MultipartFile file) {
+        System.out.println("file.getSize(): " +  file.getSize());
+        String suffix = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf(".") + 1,
+                file.getOriginalFilename().length());
+        String savePath = "/nfs/lhl/Torch-Pruning/benchmarks/usr_model/";
+        // String savePath = "C:\\OIDPL\\test_user_imgs\\";
+        File savePathFile = new File(savePath);
+        if (!savePathFile.exists()){
+            savePathFile.mkdir();
+        }
+        String filename = UUID.randomUUID().toString().replaceAll("-", "") + "." + suffix;
+        try {
+            file.transferTo(new File(savePath + filename));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        System.out.println("savePath + filename: " +  savePath + filename);
+
+        return "10.214.242.155:7996/WorkSpace/benchmarks/usr_model/"+filename;
+        // return "192.168.2.55:7667/img/"+filename;
+    }
+
+    @CrossOrigin
+    @ApiOperation("上传模型")
+    @PostMapping("/uploadCkpts")
+    public ResultBean<UploadPicturesRes> uploadCkpts(@RequestParam() Integer datasetId, @RequestParam(name = "pictures") MultipartFile[] pictures) throws IOException {
+        System.out.println("datasetId: "+ datasetId);
+        System.out.println("ckpts: "+ pictures);
+        ResultBean<UploadPicturesRes> result = new ResultBean<>();
+        UploadPicturesRes res = new UploadPicturesRes();
+        List<String> savePaths = new ArrayList<>();
+        List<String> names = new ArrayList<>();
+//        for (MultipartFile f : pictures) {
+//            String s = upload(f);
+//            savePaths.add(s);
+//            names.add(f.getName());
+//        }
+        String s = uploadCkpt(pictures[0]);
+        System.out.println("ckpt: " + s);
+        savePaths.add(s);
+        names.add(pictures[0].getName());
+        res.setSucceed(true);
+        res.setImgpath(s);
+        result.setData(res);
+        result.setMsg("ckpt上传成功");
+        return result;
+    }
+
+
+
     @CrossOrigin
     @ApiOperation("展示图像")
     @PostMapping("/getPictures")

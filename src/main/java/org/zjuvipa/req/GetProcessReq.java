@@ -4,5 +4,6 @@ import lombok.Data;
 
 @Data
 public class GetProcessReq {
-    private String historyName;
+    private int batchSize;
+    private String dataset;
 }

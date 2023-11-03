@@ -31,4 +31,8 @@ public interface HistoryMapper extends BaseMapper<History> {
     public boolean deleteHistory(String username, String historyName);
 
     public boolean updateHistory(int historyId, String newName);
+
+    public boolean uploadHistory(String modelname, String tasktype, String checkpointpath, String username, String submittime, String status,
+                                 String paramschange, String flopschange, String accchange, String losschange, String prunedpath,
+                                 String structurebeforepruned, String structureafterpruned, String logpath);
 }

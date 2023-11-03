@@ -39,6 +39,15 @@ public class HistoryServiceImpl extends ServiceImpl<HistoryMapper, History> impl
     }
 
     @Override
+    public boolean uploadHistory(String modelname, String tasktype, String checkpointpath, String username, String submittime, String status,
+                                 String paramschange, String flopschange, String accchange, String losschange, String prunedpath,
+                                 String structurebeforepruned, String structureafterpruned, String logpath) {
+        historyMapper.uploadHistory(modelname, tasktype, checkpointpath, username, submittime, status, paramschange,
+                flopschange, accchange, losschange, prunedpath, structurebeforepruned, structureafterpruned, logpath);
+        return true;
+    }
+
+    @Override
     public List<HistoryInfo> findHistoriesByUser(String username){
         List<History> histories =  historyMapper.findHistoriesByUser(username);
         List<HistoryInfo> historyInfos = new ArrayList<>();

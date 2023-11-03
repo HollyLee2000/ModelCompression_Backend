@@ -26,18 +26,21 @@ public class History implements Serializable {
     @TableId(type = IdType.AUTO)
     private Integer algorithmId;
 
+    private String modelName;
+    private String taskType;
+    private String checkpointPath;
     private String username;
-    private String name;
-    private Double score;
-    private String institute;
-    private Integer ranking;
-    private String morfPath;
-    private String lerfPath;
-    private String pythonPath;
-    private String email;
-    private String info;
-    private String dateTime;
+    private String submitTime;
     private String status;
+    private String paramsChange;
+    private String flopsChange;
+    private String accChange;
+    private String lossChange;
+    private String prunedPath;
+    private String structureBeforePruned;
+    private String structureAfterPruned;
+    private String logPath;
+
 
     public History(){}
 

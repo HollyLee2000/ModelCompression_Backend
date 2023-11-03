@@ -65,6 +65,7 @@ public class AlgorithmController {
 
     private Map<String, Integer> resolvedNum = new HashMap<String, Integer>();
     private Map<String, Integer> totalNum = new HashMap<String, Integer>();
+    private boolean pruner_flag = false; //是否获得剪枝器，获得的时候开始展示进度条
 
     @CrossOrigin
     @ApiOperation("查询指定算法")
@@ -190,11 +191,128 @@ public class AlgorithmController {
     @ApiOperation("调用剪枝算法")
     @PostMapping("callPruneAlgorithm")
     public ResultBean<CallAlgorithmRes> callPruneAlgorithm(@RequestBody CallAlgorithmReq callAlgorithmReq) throws IOException, InterruptedException {
+        pruner_flag = false;
         System.out.println(callAlgorithmReq);
         ResultBean<CallAlgorithmRes> result = new ResultBean<CallAlgorithmRes>();
         String command1 = callAlgorithmReq.getModelName();
         System.out.println("command: " + command1);
         Process process = Runtime.getRuntime().exec(command1);
+        String algo_name = callAlgorithmReq.getAlgorithmName();
+        int batchSize = callAlgorithmReq.getDatasetId();
+        String dataset = callAlgorithmReq.getDatasetName();
+
+
+
+
+        if(algo_name.equals("cifarAlgorithm")){
+
+            if(dataset.equals("cifar10") || dataset.equals("cifar100")){
+                Map<Integer, Integer> intToIntMap = new HashMap<>();
+                intToIntMap.put(128, 79);
+                intToIntMap.put(64, 157);
+                intToIntMap.put(32, 313);
+                // 王佳的socket
+                int Num = 0;
+                int size1 = intToIntMap.get(batchSize);
+                resolvedNum.put("current", 0);
+                ServerSocket ss = new ServerSocket(50006);
+                while(Num < size1*2) {
+                    System.out.println("启动服务器....");
+                    Socket s = ss.accept();
+                    System.out.println("客户端:"+s.getInetAddress().getLocalHost()+"已连接到服务器");
+                    BufferedReader br = new BufferedReader(new InputStreamReader(s.getInputStream()));
+                    String mess = br.readLine();
+                    if(StringUtils.hasText(mess)){
+                        if(mess.equals("Pruner got")){
+                            System.out.println("mess: " + mess);
+                            System.out.println("获得了剪枝器，准备开始展示进度条");
+                            pruner_flag = true;
+                        }else{
+                            System.out.println("mess: " + mess);
+                            Num += 1;
+                        }
+                    }
+                    else continue;
+                    System.out.println("已处理batch:" +Num);
+                    resolvedNum.put("current", Num);
+                }
+                ss.close();
+            }else if(dataset.equals("imagenet")) {
+                Map<Integer, Integer> intToIntMap = new HashMap<>();
+                intToIntMap.put(128, 391);
+                intToIntMap.put(64, 782);
+                intToIntMap.put(32, 1563);
+
+                // 王佳的socket
+                int Num = 0;
+                int size1 = intToIntMap.get(batchSize);
+                resolvedNum.put("current", 0);
+                ServerSocket ss = new ServerSocket(50006);
+                while (Num < size1 * 2) {
+                    System.out.println("启动服务器....");
+                    Socket s = ss.accept();
+                    System.out.println("客户端:" + s.getInetAddress().getLocalHost() + "已连接到服务器");
+                    BufferedReader br = new BufferedReader(new InputStreamReader(s.getInputStream()));
+                    String mess = br.readLine();
+                    if (StringUtils.hasText(mess)) {
+                        if (mess.equals("Pruner got")) {
+                            System.out.println("mess: " + mess);
+                            System.out.println("获得了剪枝器，准备开始展示进度条");
+                            pruner_flag = true;
+                        } else {
+                            System.out.println("mess: " + mess);
+                            Num += 1;
+                        }
+                    } else continue;
+                    System.out.println("已处理batch:" + Num);
+                    resolvedNum.put("current", Num);
+                }
+                ss.close();
+            }else if(dataset.equals("coco")){
+
+
+
+                Map<Integer, Integer> intToIntMap = new HashMap<>();
+                intToIntMap.put(128, 20);
+                intToIntMap.put(64, 40);
+                intToIntMap.put(32, 79);
+                intToIntMap.put(16, 157);
+
+                // 王佳的socket
+                int Num = 0;
+                int size1 = intToIntMap.get(batchSize);
+                resolvedNum.put("current", 0);
+                ServerSocket ss = new ServerSocket(50006);
+                while (Num < size1) {
+                    System.out.println("启动服务器....");
+                    Socket s = ss.accept();
+                    System.out.println("客户端:" + s.getInetAddress().getLocalHost() + "已连接到服务器");
+                    BufferedReader br = new BufferedReader(new InputStreamReader(s.getInputStream()));
+                    String mess = br.readLine();
+                    if (StringUtils.hasText(mess)) {
+                        if (mess.equals("Pruner got")) {
+                            System.out.println("mess: " + mess);
+                            System.out.println("获得了剪枝器，准备开始展示进度条");
+                            pruner_flag = true;
+                        } else {
+                            System.out.println("mess: " + mess);
+                            Num += 1;
+                        }
+                    } else continue;
+                    System.out.println("已处理batch:" + Num);
+                    resolvedNum.put("current", Num);
+                }
+                ss.close();
+
+
+
+
+            }
+
+        }
+
+
+
         BufferedReader in = new BufferedReader(new InputStreamReader(process.getInputStream()));
         List<String> lines = new ArrayList<String>();
         String line;
@@ -210,6 +328,68 @@ public class AlgorithmController {
         System.out.println("result:" + callAlgorithmRes);
         return result;
     }
+
+    @CrossOrigin
+    @ApiOperation("读取进度")
+    @PostMapping("getProcess")
+    public ResultBean<GetProcessRes> getProcess(@RequestBody GetProcessReq getProcessReq) {
+//        log.info("getProcessReq"+getProcessReq);
+//        log.info("getProcess:"+resolvedNum);
+//        log.info("getProcess:"+totalNum);
+        ResultBean<GetProcessRes> resultBean = new ResultBean<>();
+        GetProcessRes getProcessRes = new GetProcessRes();
+
+        String dataset = getProcessReq.getDataset();
+        Map<Integer, Integer> intToIntMap = new HashMap<>();
+        if(dataset.equals("cifar10")||dataset.equals("cifar100")){
+            intToIntMap.put(128, 79);
+            intToIntMap.put(64, 157);
+            intToIntMap.put(32, 313);
+        }else if(dataset.equals("imagenet")){
+            intToIntMap.put(128, 391);
+            intToIntMap.put(64, 782);
+            intToIntMap.put(32, 1563);
+        }else if(dataset.equals("coco")){
+            intToIntMap.put(128, 20);
+            intToIntMap.put(64, 40);
+            intToIntMap.put(32, 79);
+            intToIntMap.put(16, 157);
+        }
+
+
+
+        if (resolvedNum.containsKey("current")) {
+            System.out.println("有current这个建");
+            getProcessRes.setProcess(resolvedNum.get("current"));
+        } else {
+            System.out.println("没有current键，赋0");
+            getProcessRes.setProcess(0);
+        }
+//        getProcessRes.setProcess(resolvedNum.get("current"));
+        if(getProcessReq.getBatchSize()==10086){
+            if(dataset.equals("cifar10")||dataset.equals("cifar100")){
+                getProcessRes.setTotal(79);
+            }else if(dataset.equals("imagenet")){
+                getProcessRes.setTotal(391);
+            }else if(dataset.equals("coco")){
+                getProcessRes.setTotal(20);
+            }
+        }else{
+            if(dataset.equals("coco")){
+                getProcessRes.setTotal(intToIntMap.get(getProcessReq.getBatchSize()));
+            }else{
+                getProcessRes.setTotal(intToIntMap.get(getProcessReq.getBatchSize())*2);
+            }
+        }
+
+
+        resultBean.setData(getProcessRes);
+        getProcessRes.setPrunner(pruner_flag);
+
+        return resultBean;
+    }
+
+
 
     @CrossOrigin
     @ApiOperation("调用算法")
@@ -473,29 +653,5 @@ public class AlgorithmController {
         return result;
     }
 
-    @CrossOrigin
-    @ApiOperation("读取进度")
-    @PostMapping("getProcess")
-    public ResultBean<GetProcessRes> getProcess(@RequestBody GetProcessReq getProcessReq) {
-//        log.info("getProcessReq"+getProcessReq);
-//        log.info("getProcess:"+resolvedNum);
-//        log.info("getProcess:"+totalNum);
-        ResultBean<GetProcessRes> resultBean = new ResultBean<>();
-        GetProcessRes getProcessRes = new GetProcessRes();
-        if (resolvedNum.containsKey("current")) {
-            System.out.println("有current这个建");
-            getProcessRes.setProcess(resolvedNum.get("current"));
-        } else {
-            System.out.println("没有current键，赋0");
-            getProcessRes.setProcess(0);
-        }
-//        getProcessRes.setProcess(resolvedNum.get("current"));
-        if(getProcessReq.getHistoryName().equals("cub")){
-            getProcessRes.setTotal(91);
-        }
 
-        resultBean.setData(getProcessRes);
-
-        return resultBean;
-    }
 }
