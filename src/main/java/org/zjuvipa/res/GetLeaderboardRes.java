@@ -1,11 +1,11 @@
 package org.zjuvipa.res;
 
 import lombok.Data;
-import org.zjuvipa.info.qualitativeInfo;
+import org.zjuvipa.info.leaderboardInfo;
 
 import java.util.List;
 
 @Data
-public class GetQualitativeRes {
-    private List<qualitativeInfo> qualitativeinfo;
+public class GetLeaderboardRes {
+    private List<leaderboardInfo> leaderboardinfo;
 }

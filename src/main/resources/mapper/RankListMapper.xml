@@ -4,4 +4,14 @@
     <select id="getCurrentRank" resultType="org.zjuvipa.entity.rankList">
         select * from algorithm ORDER BY `rank` ASC;
     </select>
+    <select id="getQualitativeComparison" resultType="org.zjuvipa.entity.qualitativeList">
+        SELECT * FROM algorithm WHERE dataset LIKE CONCAT(#{dataset}, '%') AND model LIKE CONCAT(#{model}, '%') ORDER BY dataset, model;
+    </select>
+    <select id="getLeaderboard" resultType="org.zjuvipa.entity.leaderboardList">
+        SELECT * FROM leaderboard WHERE dataset LIKE CONCAT(#{dataset}, '%') AND model LIKE CONCAT(#{model}, '%') ORDER BY dataset, model;
+    </select>
+
+
+
+
 </mapper>

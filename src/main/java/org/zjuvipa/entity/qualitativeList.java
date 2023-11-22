@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.zjuvipa.info.rankListInfo;
+import org.zjuvipa.info.qualitativeInfo;
 import org.zjuvipa.util.MyBeanUtils;
 
 import java.io.Serializable;
@@ -19,33 +19,43 @@ import java.io.Serializable;
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-public class rankList implements Serializable {
+public class qualitativeList implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     @TableId(type = IdType.AUTO)
-    private Integer id;
+    private Integer algorithmId;
 
-    private String username;
+    private String dataset;
+
+    private String model;
+
+    private Integer year;
 
     private String name;
 
-    private Float score;
+    private String base;
 
-    private Integer ranking;
+    private String pruned;
 
-    private String institute;
+    private String accChange;
 
-    public rankList(){}
+    private String speedUp;
 
-    public rankList(rankListInfo ranklistinfo){
-        MyBeanUtils.copyProperties(ranklistinfo, this);
+    private String source;
+
+    private String notes;
+
+    public qualitativeList(){}
+
+    public qualitativeList(qualitativeInfo qualitativeinfo){
+        MyBeanUtils.copyProperties(qualitativeinfo, this);
     }
 
-    public rankListInfo change(){
-        rankListInfo ranklistinfo = new rankListInfo();
-        MyBeanUtils.copyProperties(this, ranklistinfo);
-        return ranklistinfo;
+    public qualitativeInfo change(){
+        qualitativeInfo qualitativeinfo = new qualitativeInfo();
+        MyBeanUtils.copyProperties(this, qualitativeinfo);
+        return qualitativeinfo;
     }
 
 

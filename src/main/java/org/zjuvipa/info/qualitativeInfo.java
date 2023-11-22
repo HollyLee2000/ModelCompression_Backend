@@ -1,27 +1,37 @@
 package org.zjuvipa.info;
 
 import lombok.Data;
-import org.zjuvipa.entity.rankList;
+import org.zjuvipa.entity.qualitativeList;
 import org.zjuvipa.util.MyBeanUtils;
 
 @Data
-public class rankListInfo {
+public class qualitativeInfo {
 
-    private Integer id;
+    private Integer algorithmId;
 
-    private String username;
+    private String dataset;
+
+    private String model;
+
+    private Integer year;
 
     private String name;
 
-    private Float score;
+    private String base;
 
-    private Integer ranking;
+    private String pruned;
 
-    private String institute;
+    private String accChange;
 
-    public rankListInfo(){}
+    private String speedUp;
 
-    public rankListInfo(rankList ranklist){
-        MyBeanUtils.copyProperties(ranklist, this);
+    private String source;
+
+    private String notes;
+
+    public qualitativeInfo(){}
+
+    public qualitativeInfo(qualitativeList qualitativelist){
+        MyBeanUtils.copyProperties(qualitativelist, this);
     }
 }

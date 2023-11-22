@@ -720,6 +720,56 @@ public class UserController {
         return result;
     }
 
+
+
+
+
+    @CrossOrigin
+    @ApiOperation("获得已有paper里的定性比较")
+    @PostMapping("getQualitativeComparison")
+    public ResultBean<GetQualitativeRes> getQualitativeComparison(@RequestBody GetCurrentRankReq req){
+        String dataset = req.getMorfpath();
+        String model = req.getLerfpath();
+
+        ResultBean<GetQualitativeRes> result = new ResultBean<>();
+        GetQualitativeRes getQualitativeRes = new GetQualitativeRes();
+        getQualitativeRes.setQualitativeinfo(iGetRankService.getQualitativeComparison(dataset, model));
+//        System.out.println("getRankRes: "+getRankRes);
+        if (getQualitativeRes.getQualitativeinfo()!=null){
+            result.setData(getQualitativeRes);
+        } else {
+            result.setMsg("paper上没有查到任何算法信息");
+            result.setCode(ResultBean.FAIL);
+            result.setData(null);
+        }
+        return result;
+    }
+
+
+    @CrossOrigin
+    @ApiOperation("我们的Leaderboard")
+    @PostMapping("getLeaderboard")
+    public ResultBean<GetLeaderboardRes> getLeaderboard(@RequestBody GetCurrentRankReq req){
+        String dataset = req.getMorfpath();
+        String model = req.getLerfpath();
+
+        ResultBean<GetLeaderboardRes> result = new ResultBean<>();
+        GetLeaderboardRes getLeaderboardRes = new GetLeaderboardRes();
+        getLeaderboardRes.setLeaderboardinfo(iGetRankService.getLeaderboard(dataset, model));
+//        System.out.println("getRankRes: "+getRankRes);
+        if (getLeaderboardRes.getLeaderboardinfo()!=null){
+            result.setData(getLeaderboardRes);
+        } else {
+            result.setMsg("paper上没有查到任何算法信息");
+            result.setCode(ResultBean.FAIL);
+            result.setData(null);
+        }
+        return result;
+    }
+
+
+
+
     @CrossOrigin
     //测试后端cookie和session
     @ApiOperation("测试后端cookie和session")

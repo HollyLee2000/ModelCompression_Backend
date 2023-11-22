@@ -1,11 +1,11 @@
 package org.zjuvipa.info;
 
 import lombok.Data;
-import org.zjuvipa.entity.qualitativeList;
+import org.zjuvipa.entity.leaderboardList;
 import org.zjuvipa.util.MyBeanUtils;
 
 @Data
-public class qualitativeInfo {
+public class leaderboardInfo {
 
     private Integer algorithmId;
 
@@ -19,19 +19,25 @@ public class qualitativeInfo {
 
     private String base;
 
-    private String pruned;
+    private String pruned2;
 
-    private String accChange;
+    private String accChange2;
 
-    private String speedUp;
+    private String pruned4;
+
+    private String accChange4;
+
+    private String pruned6;
+
+    private String accChange6;
 
     private String source;
 
     private String notes;
 
-    public qualitativeInfo(){}
+    public leaderboardInfo(){}
 
-    public qualitativeInfo(qualitativeList qualitativelist){
-        MyBeanUtils.copyProperties(qualitativelist, this);
+    public leaderboardInfo(leaderboardList leaderboardlist){
+        MyBeanUtils.copyProperties(leaderboardlist, this);
     }
 }

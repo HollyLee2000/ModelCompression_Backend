@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.zjuvipa.info.qualitativeInfo;
+import org.zjuvipa.info.leaderboardInfo;
 import org.zjuvipa.util.MyBeanUtils;
 
 import java.io.Serializable;
@@ -19,7 +19,7 @@ import java.io.Serializable;
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-public class qualitativeList implements Serializable {
+public class leaderboardList implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -36,26 +36,32 @@ public class qualitativeList implements Serializable {
 
     private String base;
 
-    private String pruned;
+    private String pruned2;
 
-    private String accChange;
+    private String accChange2;
 
-    private String speedUp;
+    private String pruned4;
+
+    private String accChange4;
+
+    private String pruned6;
+
+    private String accChange6;
 
     private String source;
 
     private String notes;
 
-    public qualitativeList(){}
+    public leaderboardList(){}
 
-    public qualitativeList(qualitativeInfo qualitativeinfo){
-        MyBeanUtils.copyProperties(qualitativeinfo, this);
+    public leaderboardList(leaderboardInfo leaderboardinfo){
+        MyBeanUtils.copyProperties(leaderboardinfo, this);
     }
 
-    public qualitativeInfo change(){
-        qualitativeInfo qualitativeinfo = new qualitativeInfo();
-        MyBeanUtils.copyProperties(this, qualitativeinfo);
-        return qualitativeinfo;
+    public leaderboardInfo change(){
+        leaderboardInfo leaderboardinfo = new leaderboardInfo();
+        MyBeanUtils.copyProperties(this, leaderboardinfo);
+        return leaderboardinfo;
     }
 
 
