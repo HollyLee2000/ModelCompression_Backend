@@ -3,6 +3,8 @@ package org.zjuvipa.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.zjuvipa.entity.rankList;
 import org.zjuvipa.info.rankListInfo;
+import org.zjuvipa.info.qualitativeInfo;
+import org.zjuvipa.info.leaderboardInfo;
 import java.util.List;
 
 /**
@@ -15,4 +17,8 @@ import java.util.List;
  */
 public interface IGetRankService extends IService<rankList> {
     public List<rankListInfo> getCurrentRank();
+
+    public List<qualitativeInfo> getQualitativeComparison(String dataset, String model);
+
+    public List<leaderboardInfo> getLeaderboard(String dataset, String model);
 }
