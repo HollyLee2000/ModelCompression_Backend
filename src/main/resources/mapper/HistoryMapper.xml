@@ -6,12 +6,16 @@
         values (0,#{historyName},#{algoId},#{algoName},#{username},#{datasetId},#{datasetName},#{modelPath},#{dateTime})
     </insert>
     <select id="findHistoriesByUser" resultType="org.zjuvipa.entity.History">
-        select * from algorithm
+        select * from history
         where username=#{username}
     </select>
     <select id="findAllHistories" resultType="org.zjuvipa.entity.History">
         select * from algorithm
     </select>
+    <insert id="uploadHistory">
+        insert into history (model_name, task_type, checkpoint_path, username, submit_time, status, params_change, flops_change, acc_change, loss_change, pruned_path, structure_before_pruned, structure_after_pruned, log_path)
+        values (#{modelname}, #{tasktype}, #{checkpointpath}, #{username}, #{submittime}, #{status}, #{paramschange}, #{flopschange}, #{accchange}, #{losschange}, #{prunedpath}, #{structurebeforepruned}, #{structureafterpruned}, #{logpath});
+    </insert>
     <select id="findHistoryByName" resultType="org.zjuvipa.entity.History">
         select * from history
         where (username=#{param1} and history_name=#{param2})

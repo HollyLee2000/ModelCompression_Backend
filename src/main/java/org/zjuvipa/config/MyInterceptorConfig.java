@@ -26,9 +26,11 @@ public class MyInterceptorConfig implements WebMvcConfigurer {
         registry.addResourceHandler("/NWPU/**").addResourceLocations("file:/nfs/lhl/datasets/NWPU-RESISC45_dataset/train/");
         registry.addResourceHandler("/Food101/**").addResourceLocations("file:/nfs/lhl/datasets/food-101/food-101/train/");
         registry.addResourceHandler("/Place365/**").addResourceLocations("file:/nfs3-p2/duanjr/places365_standard/train/");
-        registry.addResourceHandler("/WorkSpace/**").addResourceLocations("file:/nfs3-p1/duanjr/meta-score-attribution-hollylee/");
+        registry.addResourceHandler("/WorkSpace/**").addResourceLocations("file:/nfs/lhl/Torch-Pruning/");
         registry.addResourceHandler("/Checkpoints/**").addResourceLocations("file:/nfs3-p1/djr/externalUSB/consistency/checkpoints/checkpoints/");
         //data/user_upload
+        registry.addResourceHandler("/ckpt/**").addResourceLocations("file:/home/lhl/.cache/torch/hub/checkpoints/");
+
 
 
 

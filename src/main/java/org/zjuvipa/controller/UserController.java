@@ -5,8 +5,10 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 
-
-
+import com.fasterxml.jackson.databind.ObjectWriter;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.code.kaptcha.impl.DefaultKaptcha;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -21,6 +23,7 @@ import org.zjuvipa.req.*;
 import org.zjuvipa.res.*;
 import org.zjuvipa.service.IGetRankService;
 import org.zjuvipa.service.IAlgorithmService;
+import org.zjuvipa.service.IHistoryService;
 import org.zjuvipa.service.IUserService;
 import org.zjuvipa.util.CookieUtil;
 import org.zjuvipa.util.MD5Util;
@@ -36,6 +39,9 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.awt.image.BufferedImage;
 import java.io.*;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.net.SocketTimeoutException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -73,6 +79,14 @@ public class UserController {
 
     @Autowired
     IAlgorithmService iAlgorithmService;
+
+    @Autowired
+    IHistoryService iHistoryService;
+
+    private Map<String, Integer> resolvedNum = new HashMap<String, Integer>();
+    private Map<String, Integer> totalNum = new HashMap<String, Integer>();
+    private boolean pruner_flag = false; //是否获得剪枝器，获得的时候开始展示进度条
+    private boolean process_error = false;
 
     public static final String staticPath = ClassUtils.getDefaultClassLoader().getResource("static").getPath();
     private String saveHeadImg(MultipartFile file) {
@@ -359,6 +373,34 @@ public class UserController {
     }
 
     @CrossOrigin
+    @ApiOperation("上传历史记录")
+    @PostMapping("/SubmitHistory")
+    public ResultBean<UploadPicturesRes> SubmitHistory(@RequestBody SubmitHistoryReq req) throws IOException {
+        String username = req.getUsername();
+
+        ResultBean<UploadPicturesRes> result = new ResultBean<>();
+        UploadPicturesRes res = new UploadPicturesRes();
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        Date date = new Date();
+        String day = df.format(date);
+        System.out.println("Debug!!!: "+req.getUsername()+" "+req.getModelname()+" "+req.getTasktype()+" "+req.getCheckpointpath()+" "+
+                req.getStatus()+" "+req.getParamschange()+" "+req.getFlopschange()+" "+req.getAccchange()+" "+req.getLosschange()+" "+req.getPrunedpath()+" "+day
+                +" "+req.getStructurebeforepruned()+" "+req.getStructureafterpruned()+" "+req.getLogpath());
+
+        res.setSucceed(iHistoryService.uploadHistory(req.getModelname(), req.getTasktype(), req.getCheckpointpath(), req.getUsername(),
+                day, req.getStatus(),req.getParamschange(),req.getFlopschange(),req.getAccchange(),req.getLosschange(), req.getPrunedpath(),
+                req.getStructurebeforepruned(), req.getStructureafterpruned(), req.getLogpath()));
+
+//        res.setSucceed(iHistoryService.uploadHistory(req.getUsername(), req.getName(), req.getScore(), req.getInstitute(),
+//                req.getRanking(),req.getMorfPath(),req.getLerfPath(),req.getPythonPath(),req.getEmail(),req.getInfo(), day, "In Process"));
+
+
+        result.setData(res);
+        result.setMsg("上传历史记录成功");
+        return result;
+    }
+
+    @CrossOrigin
     @ApiOperation("上传算法")
     @PostMapping("/SubmitAlgorithm")
     public ResultBean<UploadPicturesRes> SubmitAlgorithm(@RequestBody SubmitAlgorithmReq req) throws IOException {
@@ -366,19 +408,9 @@ public class UserController {
 
         ResultBean<UploadPicturesRes> result = new ResultBean<>();
         UploadPicturesRes res = new UploadPicturesRes();
-//        List<String> savePaths = new ArrayList<>();
-//        List<String> names = new ArrayList<>();
-//        for (MultipartFile f : pictures) {
-//            String s = upload(f);
-//            savePaths.add(s);
-//            names.add(f.getName());
-//        }
-
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
         Date date = new Date();
         String day = df.format(date);
-//        historyInfo.setDateTime(day);
-
         System.out.println("Debug!!!: "+req.getUsername().toString()+" "+req.getName().toString()+" "+req.getScore().toString()+" "+req.getInstitute().toString()+" "+
                 req.getRanking().toString()+" "+req.getMorfPath().toString()+" "+req.getLerfPath().toString()+" "+req.getPythonPath().toString()+" "+req.getEmail().toString()+" "+req.getInfo().toString());
         res.setSucceed(iAlgorithmService.uploadAlgorithm(req.getUsername(), req.getName(), req.getScore(), req.getInstitute(),
@@ -386,6 +418,258 @@ public class UserController {
         result.setData(res);
         result.setMsg("上传成功");
         return result;
+    }
+
+
+
+    @CrossOrigin
+    @ApiOperation("读取进度")
+    @PostMapping("getProcess")
+    public ResultBean<GetProcessRes> getProcess(@RequestBody GetProcessReq getProcessReq) {
+//        log.info("getProcessReq"+getProcessReq);
+//        log.info("getProcess:"+resolvedNum);
+//        log.info("getProcess:"+totalNum);
+        ResultBean<GetProcessRes> resultBean = new ResultBean<>();
+        GetProcessRes getProcessRes = new GetProcessRes();
+
+        String dataset = getProcessReq.getDataset();
+        Map<Integer, Integer> intToIntMap = new HashMap<>();
+        if(dataset.equals("cifar10")||dataset.equals("cifar100")){
+            intToIntMap.put(128, 79);
+            intToIntMap.put(64, 157);
+            intToIntMap.put(32, 313);
+        }else if(dataset.equals("imagenet")){
+            intToIntMap.put(128, 391);
+            intToIntMap.put(64, 782);
+            intToIntMap.put(32, 1563);
+        }else if(dataset.equals("COCO")){
+            intToIntMap.put(128, 20);
+            intToIntMap.put(64, 40);
+            intToIntMap.put(32, 79);
+            intToIntMap.put(16, 157);
+        }
+
+
+
+        if (resolvedNum.containsKey("current")) {
+            System.out.println("有current这个建");
+            getProcessRes.setProcess(resolvedNum.get("current"));
+        } else {
+            System.out.println("没有current键，赋0");
+            getProcessRes.setProcess(0);
+        }
+//        getProcessRes.setProcess(resolvedNum.get("current"));
+        if(getProcessReq.getBatchSize()==10086){
+            if(dataset.equals("cifar10")||dataset.equals("cifar100")){
+                getProcessRes.setTotal(79);
+            }else if(dataset.equals("imagenet")){
+                getProcessRes.setTotal(391);
+            }else if(dataset.equals("COCO")){
+                getProcessRes.setTotal(79);
+            }
+        }else{
+            if(dataset.equals("COCO")){
+                getProcessRes.setTotal(intToIntMap.get(getProcessReq.getBatchSize()));
+            }else{
+                getProcessRes.setTotal(intToIntMap.get(getProcessReq.getBatchSize())*2);
+            }
+        }
+
+
+        resultBean.setData(getProcessRes);
+        getProcessRes.setPrunner(pruner_flag);
+
+        return resultBean;
+    }
+
+    @CrossOrigin
+    @ApiOperation("修改json树")
+    @PostMapping("/updateJsonTree")
+    public ResultBean<UploadPicturesRes> updateJsonTree(@RequestBody SubmitAlgorithmReq req) throws IOException, InterruptedException {
+        process_error = false;
+        String username = req.getUsername();
+        String model = req.getName();
+        String dataset = req.getInstitute();
+        String ckpt = req.getMorfPath();
+        String usrModelName = req.getLerfPath();
+        ResultBean<UploadPicturesRes> result = new ResultBean<>();
+        UploadPicturesRes res = new UploadPicturesRes();
+
+        String Script = req.getPythonPath();
+        System.out.println("Script: "+ Script);
+        System.out.println("dataset: "+ dataset);
+        System.out.println("model: "+ model);
+
+        //检测文件系统中是否存在ckpt这个文件
+        File ckptFile = new File(ckpt);
+
+        if(ckptFile.exists()){
+            int size1 = 0;
+            if(dataset.equals("CIFAR10")||dataset.equals("CIFAR100")){
+                size1 = 79;
+            }else if(dataset.equals("ImageNet")){
+                size1 = 391;
+            }else if(dataset.equals("COCO")){
+                size1 = 79;
+            }else{
+                System.out.println("dataset: "+ dataset);
+            }
+
+
+            Process process = Runtime.getRuntime().exec(Script);
+
+
+//            int batchSize = 128;
+//            Map<Integer, Integer> intToIntMap = new HashMap<>();
+//            intToIntMap.put(128, 79);
+//            intToIntMap.put(64, 157);
+//            intToIntMap.put(32, 313);
+            int Num = 0;
+//            int size1 = intToIntMap.get(batchSize);
+
+
+            resolvedNum.put("current", 0);
+            ServerSocket ss = new ServerSocket(50006);
+            ss.setSoTimeout(1000);
+            // 获取进程的错误输出流
+            BufferedReader errorReader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+
+            while(Num < size1) {
+                System.out.println("启动服务器....");
+                try {
+                    Socket s = ss.accept();
+                    // 如果在超时时间内有客户端连接，将会执行这里的代码
+                    System.out.println("客户端:" + s.getInetAddress().getLocalHost() + "已连接到服务器");
+                    BufferedReader br = new BufferedReader(new InputStreamReader(s.getInputStream()));
+                    String mess = br.readLine();
+                    if(StringUtils.hasText(mess)){
+                        if(mess.equals("Pruner got")){
+                            System.out.println("mess: " + mess);
+                            System.out.println("获得了剪枝器，准备开始展示进度条");
+                            pruner_flag = true;
+                        }else{
+                            System.out.println("mess: " + mess);
+                            Num += 1;
+                        }
+                    }
+                    System.out.println("已处理batch:" +Num);
+                    resolvedNum.put("current", Num);
+                } catch (SocketTimeoutException e) {
+                    // 如果超时时间内没有客户端连接，将会执行这里的代码
+                    System.out.println("在指定的超时时间内没有客户端连接到服务器");
+
+                    if(!errorReader.ready()){
+                        System.out.println("还没出现错误");
+                    }else{
+                        //补充错误输出流的信息
+                        if(!dataset.equals("COCO")){
+                            System.out.println("程序出错了,退出！");
+                            break;
+                        }
+
+                    }
+                }
+            }
+            ss.close();
+
+            System.out.println("任务结束，服务器关闭");
+
+
+
+            BufferedReader in = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            List<String> lines = new ArrayList<String>();
+            String line;
+            while ((line = in.readLine()) != null) {
+                lines.add(line);
+            }
+            process.waitFor();
+
+            System.out.println("lines: "+lines);
+
+            //获取lines最后一行的内容，检测是否是"finished"
+            if(lines.get(lines.size() - 1).equals("finished")){
+                ObjectMapper mapper = new ObjectMapper();
+                mapper.enable(SerializationFeature.INDENT_OUTPUT); // 启用缩进输出
+                ObjectWriter writer = mapper.writerWithDefaultPrettyPrinter(); // 使用默认的缩进格式
+                File jsonFile = new File("/nfs/lhl/ModelCompression/modelzoo.json");
+                ObjectNode rootNode = (ObjectNode) mapper.readTree(jsonFile);
+                // 2. 在 JSON 结构中查找满足条件的节点
+                boolean found = false;
+                ArrayNode childrenArray = rootNode.withArray("children");
+                for (int i = 0; i < childrenArray.size(); i++) {
+                    ObjectNode datasetNode = (ObjectNode) childrenArray.get(i);
+                    if (datasetNode.get("name").asText().equals(dataset)) {
+                        ArrayNode modelsArray = datasetNode.withArray("children");
+                        for (int j = 0; j < modelsArray.size(); j++) {
+                            ObjectNode modelNode = (ObjectNode) modelsArray.get(j);
+                            if (modelNode.get("name").asText().equals(model)) {
+                                // 3. 添加一个新节点
+                                ObjectNode taskNode = (ObjectNode) modelsArray.get(j);
+                                ArrayNode taskArray = taskNode.withArray("children");
+                                System.out.println("taskArray: "+ taskArray);
+                                ObjectNode newNode = mapper.createObjectNode();
+                                newNode.put("name", username + ":" + usrModelName);
+                                newNode.put("type", "usr");
+                                newNode.put("model_name", dataset + "_" + model + "_" + username + ":" + usrModelName);
+                                newNode.put("status", "done");
+                                newNode.put("path", ckpt);
+                                newNode.put("acc", lines.get(lines.size() - 4));
+                                newNode.put("params", lines.get(lines.size() - 3));
+                                newNode.put("flops", lines.get(lines.size() - 2));
+                                newNode.put("size", 1616);
+                                taskArray.add(newNode);
+                                found = true;
+                                break;
+                            }
+                        }
+                        if (found) {
+                            break;
+                        }
+                    }
+                }
+                res.setSucceed(found);
+                // 4. 将修改后的 JSON 结构重新写入文件
+                writer.writeValue(jsonFile, rootNode);
+//        // 4. 将修改后的 JSON 结构重新写入文件
+//        mapper.writeValue(jsonFile, rootNode);
+                result.setData(res);
+                result.setMsg("上传成功");
+                return result;
+            }else{
+                res.setSucceed(false);
+                result.setData(res);
+                result.setMsg("上传失败");
+                return result;
+            }
+        }else{
+            res.setSucceed(false);
+            result.setData(res);
+            result.setMsg("上传失败");
+            return result;
+        }
+
+
+
+
+
+
+        //读取/nfs/lhl/ModelCompression/modelzoo.json文件，找到"name"为model，且其上一级的"name"为dataset的项，如果找到，在它的children里添加一项：
+//        {
+//            "name": username+":"+usrModelName,
+//            "type": "usr",
+//            "model_name": dataset+"_"+model+"_"+username+":"+usrModelName,
+//            "path": ckpt,
+//            "acc": "N/A",
+//            "params": "N/A",
+//            "flops": "N/A",
+//            "size": 1616
+//        }
+//        并设置res.setSucceed(true);
+        //若找不到类似的项，设置res.setSucceed(false);
+
+
+        // 1. 读取并解析 JSON 文件
+
     }
 
     @CrossOrigin
@@ -435,6 +719,56 @@ public class UserController {
         }
         return result;
     }
+
+
+
+
+
+    @CrossOrigin
+    @ApiOperation("获得已有paper里的定性比较")
+    @PostMapping("getQualitativeComparison")
+    public ResultBean<GetQualitativeRes> getQualitativeComparison(@RequestBody GetCurrentRankReq req){
+        String dataset = req.getMorfpath();
+        String model = req.getLerfpath();
+
+        ResultBean<GetQualitativeRes> result = new ResultBean<>();
+        GetQualitativeRes getQualitativeRes = new GetQualitativeRes();
+        getQualitativeRes.setQualitativeinfo(iGetRankService.getQualitativeComparison(dataset, model));
+//        System.out.println("getRankRes: "+getRankRes);
+        if (getQualitativeRes.getQualitativeinfo()!=null){
+            result.setData(getQualitativeRes);
+        } else {
+            result.setMsg("paper上没有查到任何算法信息");
+            result.setCode(ResultBean.FAIL);
+            result.setData(null);
+        }
+        return result;
+    }
+
+
+    @CrossOrigin
+    @ApiOperation("我们的Leaderboard")
+    @PostMapping("getLeaderboard")
+    public ResultBean<GetLeaderboardRes> getLeaderboard(@RequestBody GetCurrentRankReq req){
+        String dataset = req.getMorfpath();
+        String model = req.getLerfpath();
+
+        ResultBean<GetLeaderboardRes> result = new ResultBean<>();
+        GetLeaderboardRes getLeaderboardRes = new GetLeaderboardRes();
+        getLeaderboardRes.setLeaderboardinfo(iGetRankService.getLeaderboard(dataset, model));
+//        System.out.println("getRankRes: "+getRankRes);
+        if (getLeaderboardRes.getLeaderboardinfo()!=null){
+            result.setData(getLeaderboardRes);
+        } else {
+            result.setMsg("paper上没有查到任何算法信息");
+            result.setCode(ResultBean.FAIL);
+            result.setData(null);
+        }
+        return result;
+    }
+
+
+
 
     @CrossOrigin
     //测试后端cookie和session

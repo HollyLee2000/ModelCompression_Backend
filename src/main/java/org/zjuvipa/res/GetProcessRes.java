@@ -6,4 +6,5 @@ import lombok.Data;
 public class GetProcessRes {
     private int process;
     private int total;
+    private boolean prunner;
 }
