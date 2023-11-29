@@ -1,0 +1,46 @@
+package org.zjuvipa.compression.service;
+
+import com.baomidou.mybatisplus.extension.service.IService;
+import org.zjuvipa.model.entity.History;
+import org.zjuvipa.model.info.HistoryInfo;
+
+import java.util.List;
+
+/**
+ * <p>
+ *  服务类
+ * </p>
+ *
+ * @author panyan
+ * @since 2022-08-05
+ */
+public interface IHistoryService extends IService<History> {
+    public int addHistory(HistoryInfo historyInfo);
+
+    public HistoryInfo findHistoryByName(String username, String historyName);
+
+    public List<HistoryInfo> findHistoriesByUser(String username);
+
+    public List<HistoryInfo> findAllHistories(String username);
+
+    public boolean uploadHistory(String modelname, String tasktype, String checkpointpath, String username, String submittime, String status,
+                                 String paramschange, String flopschange, String accchange, String losschange, String prunedpath,
+                                 String structurebeforepruned, String structureafterpruned, String logpath);
+
+    public boolean uploadTrainingHistory(String modelname, String tasktype, String checkpointpath, String username, String submittime, String status,
+                                 String paramschange, String flopschange, String accchange, String losschange, String prunedpath,
+                                 String structurebeforepruned, String structureafterpruned, String logpath, int istrain, int totepoch, int currentepoch,
+                                 String script, String client);
+
+
+
+    public List<HistoryInfo> findHistoriesByUserAndAlgo(String username, int algoId);
+
+    public List<HistoryInfo> findHistoriesByUserAndDataset(String username, int datasetId);
+
+    public List<HistoryInfo> findHistoriesByUserAndAlgoAndDataset(String username, int algoId, int datasetId);
+
+    public boolean deleteHistory(String username, String historyName);
+
+    public boolean updateHistory(int historyId, String newHistory);
+}
