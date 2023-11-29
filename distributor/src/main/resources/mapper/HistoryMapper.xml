@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.zjuvipa.compression.distributor.mapper.DistributorHistoryMapper">
+    <select id="findTrainingTask" resultType="History">
+        select * from history
+        where is_training=1
+    </select>
+    <update id="updateHistory">
+        update history
+        set is_training=2
+        where history_id=#{param1}
+    </update>
+    <update id="setTaskIsTraining">
+        update history
+        set is_training=2
+        where history_id=#{param1}
+    </update>
+</mapper>
