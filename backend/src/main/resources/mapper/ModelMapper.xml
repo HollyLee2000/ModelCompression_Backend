@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.zjuvipa.compression.backend.mapper.ModelMapper">
+    <insert id="addModel" parameterType="Model">
+        insert into model (model_name, algo_id, algo_name, username, dataset_id, dataset_name, model_path, date_time)
+        values (#{modelName},#{algoId},#{algoName},#{username},#{datasetId},#{datasetName},#{modelPath},#{dateTime})
+    </insert>
+    <select id="findModelsByUser" resultType="Model">
+        select * from model
+        where username=#{username}
+    </select>
+    <select id="findModelByName" resultType="Model">
+        select * from model
+        where (username=#{param1} and model_name=#{param2})
+    </select>
+    <select id="findModelsByUserAndAlgo" resultType="Model">
+        select * from model
+        where (username=#{param1} and algo_id=#{param2})
+    </select>
+    <select id="findModelsByUserAndDataset" resultType="Model">
+        select * from model
+        where (username=#{param1} and dataset_id=#{param2})
+    </select>
+    <select id="findModelsByUserAndAlgoAndDataset" resultType="Model">
+        select * from model
+        where (username=#{param1} and algo_id=#{param2} and dataset_id=#{param3})
+    </select>
+    <delete id="deleteModel" parameterType="String">
+        delete from model
+        where username=#{param1} and model_name=#{param2}
+    </delete>
+    <update id="updateModel">
+        update model
+        set model_name=#{param2}
+        where model_id=#{param1}
+    </update>
+</mapper>
