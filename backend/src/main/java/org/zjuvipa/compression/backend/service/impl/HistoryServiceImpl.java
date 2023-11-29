@@ -1,11 +1,11 @@
-package org.zjuvipa.compression.service.impl;
+package org.zjuvipa.compression.backend.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
-import org.zjuvipa.compression.service.IHistoryService;
-import org.zjuvipa.model.entity.History;
-import org.zjuvipa.model.info.HistoryInfo;
-import org.zjuvipa.compression.mapper.HistoryMapper;
+import org.zjuvipa.compression.backend.service.IHistoryService;
+import org.zjuvipa.compression.model.entity.History;
+import org.zjuvipa.compression.model.info.HistoryInfo;
+import org.zjuvipa.compression.backend.mapper.HistoryMapper;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;

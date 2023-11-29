@@ -1,15 +1,15 @@
-package org.zjuvipa.compression.service.impl;
+package org.zjuvipa.compression.backend.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
-import org.zjuvipa.compression.service.IGetRankService;
-import org.zjuvipa.model.entity.rankList;
-import org.zjuvipa.model.entity.qualitativeList;
-import org.zjuvipa.model.info.leaderboardInfo;
-import org.zjuvipa.model.entity.leaderboardList;
-import org.zjuvipa.model.info.qualitativeInfo;
-import org.zjuvipa.model.info.rankListInfo;
-import org.zjuvipa.compression.mapper.RankListMapper;
+import org.zjuvipa.compression.backend.service.IGetRankService;
+import org.zjuvipa.compression.model.entity.rankList;
+import org.zjuvipa.compression.model.entity.qualitativeList;
+import org.zjuvipa.compression.model.info.leaderboardInfo;
+import org.zjuvipa.compression.model.entity.leaderboardList;
+import org.zjuvipa.compression.model.info.qualitativeInfo;
+import org.zjuvipa.compression.model.info.rankListInfo;
+import org.zjuvipa.compression.backend.mapper.RankListMapper;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;

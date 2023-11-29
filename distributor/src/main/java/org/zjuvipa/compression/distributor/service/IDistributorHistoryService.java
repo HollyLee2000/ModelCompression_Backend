@@ -1,8 +1,8 @@
 package org.zjuvipa.compression.distributor.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import org.zjuvipa.compression.distributor.info.HistoryInfo;
-import org.zjuvipa.compression.distributor.entity.History;
+import org.zjuvipa.compression.model.info.HistoryInfo;
+import org.zjuvipa.compression.model.entity.History;
 
 import java.util.List;
 
@@ -19,5 +19,7 @@ public interface IDistributorHistoryService extends IService<History> {
     public List<HistoryInfo> findTrainingTask();
 
     public boolean updateHistory(int historyId);
+
+    public void setTaskIsTraining(int historyId);
 
 }

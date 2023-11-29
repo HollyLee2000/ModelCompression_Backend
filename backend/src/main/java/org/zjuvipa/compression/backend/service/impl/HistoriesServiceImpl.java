@@ -1,9 +1,9 @@
-package org.zjuvipa.compression.service.impl;
+package org.zjuvipa.compression.backend.service.impl;
 
-import org.zjuvipa.compression.service.IHistoriesService;
-import org.zjuvipa.model.entity.Histories;
-import org.zjuvipa.model.info.HistoriesInfo;
-import org.zjuvipa.compression.mapper.HistoriesMapper;
+import org.zjuvipa.compression.backend.service.IHistoriesService;
+import org.zjuvipa.compression.model.entity.Histories;
+import org.zjuvipa.compression.model.info.HistoriesInfo;
+import org.zjuvipa.compression.backend.mapper.HistoriesMapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 

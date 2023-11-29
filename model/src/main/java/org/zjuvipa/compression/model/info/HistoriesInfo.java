@@ -2,8 +2,7 @@ package org.zjuvipa.compression.model.info;
 
 import lombok.Data;
 import org.zjuvipa.compression.model.entity.Histories;
-import org.zjuvipa.util.MyBeanUtils;
-import org.zjuvipa.util.ResultBean;
+import org.zjuvipa.compression.common.util.MyBeanUtils;
 
 import java.time.LocalDateTime;
 

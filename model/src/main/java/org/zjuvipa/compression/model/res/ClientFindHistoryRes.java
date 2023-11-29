@@ -1,7 +1,7 @@
-package org.zjuvipa.compression.client155_2.res;
+package org.zjuvipa.compression.model.res;
 
 import lombok.Data;
-import org.zjuvipa.compression.client155_2.info.ClientHistoryInfo;
+import org.zjuvipa.compression.model.info.ClientHistoryInfo;
 
 import java.util.List;
 

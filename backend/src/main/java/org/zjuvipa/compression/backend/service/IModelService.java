@@ -1,8 +1,8 @@
-package org.zjuvipa.compression.service;
+package org.zjuvipa.compression.backend.service;
 
-import org.zjuvipa.model.entity.Model;
+import org.zjuvipa.compression.model.entity.Model;
 import com.baomidou.mybatisplus.extension.service.IService;
-import org.zjuvipa.model.info.ModelInfo;
+import org.zjuvipa.compression.model.info.ModelInfo;
 
 import java.util.List;
 

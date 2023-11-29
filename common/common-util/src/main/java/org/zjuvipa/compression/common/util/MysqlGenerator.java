@@ -1,4 +1,4 @@
-package org.zjuvipa.compression.util;
+package org.zjuvipa.compression.common.util;
 
 
 import com.baomidou.mybatisplus.core.exceptions.MybatisPlusException;

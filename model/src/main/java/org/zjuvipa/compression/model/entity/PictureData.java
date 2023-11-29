@@ -8,7 +8,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.EqualsAndHashCode;
 import lombok.Data;
 import org.zjuvipa.compression.model.info.PictureDataInfo;
-import org.zjuvipa.util.MyBeanUtils;
+import org.zjuvipa.compression.common.util.MyBeanUtils;
 
 /**
  * <p>

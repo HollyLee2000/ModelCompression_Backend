@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="org.zjuvipa.mapper.UserMapper">
+<mapper namespace="org.zjuvipa.compression.backend.mapper.UserMapper">
 <!--    添加新用户-->
-    <insert id="addUser" parameterType="org.zjuvipa.entity.User">
+    <insert id="addUser" parameterType="User">
         insert into user
         values (#{username},#{password},#{salt},#{telephone},#{headshot},#{institute},#{authority})
     </insert>
     <!--    根据用户名查询用户-->
-    <select id="findByUsername" resultType="org.zjuvipa.entity.User">
+    <select id="findByUsername" resultType="User">
         select * from user
         where username = #{username}
     </select>
     <!--    根据用户名查询权限，但是发现上面那个已经可以实现了-->
-    <select id="findAuthority" resultType="org.zjuvipa.entity.User">
+    <select id="findAuthority" resultType="User">
         select * from user
         where username = #{username}
     </select>

@@ -1,9 +1,9 @@
-package org.zjuvipa.compression.mapper;
+package org.zjuvipa.compression.backend.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import org.zjuvipa.model.entity.qualitativeList;
-import org.zjuvipa.model.entity.leaderboardList;
-import org.zjuvipa.model.entity.rankList;
+import org.zjuvipa.compression.model.entity.qualitativeList;
+import org.zjuvipa.compression.model.entity.leaderboardList;
+import org.zjuvipa.compression.model.entity.rankList;
 
 import java.util.List;
 

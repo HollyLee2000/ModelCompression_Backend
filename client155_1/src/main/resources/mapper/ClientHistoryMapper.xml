@@ -1,15 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="org.zjuvipa.client155_1.mapper.HistoryMapper">
-    <select id="findTrainingTask" resultType="org.zjuvipa.client155_2.entity.ClientHistory">
+<mapper namespace="org.zjuvipa.compression.client155_1.mapper.ClientHistoryMapper">
+    <select id="findTrainingTask" resultType="ClientHistory">
         select * from task
         where is_training=1
     </select>
+    <select id="findHistoryById" resultType="ClientHistory">
+        select * from task
+        where task_id=#{historyid}
+    </select>
     <insert id="uploadHistory">
-        insert into task (String username, String status, String paramschange, String flopschange, String accchange, String losschange,
-                                 String prunedpath, String structureafterpruned, String logpath, String totepoch, String currentepoch,
-                                 String script)
-        values (#{username}, #{status}, #{paramschange}, #{flopschange}, #{accchange}, #{losschange},
+        insert into task (task_id, username, status, params_change, flops_change, acc_change, loss_change,
+                                 pruned_path, structure_after_pruned, log_path, tot_epoch, current_epoch,
+                                 script)
+        values (#{historyid}, #{username}, #{status}, #{paramschange}, #{flopschange}, #{accchange}, #{losschange},
         #{prunedpath}, #{structureafterpruned}, #{logpath}, #{totepoch}, #{currentepoch}, #{script});
     </insert>
 </mapper>

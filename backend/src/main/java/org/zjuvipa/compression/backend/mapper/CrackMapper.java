@@ -1,6 +1,6 @@
-package org.zjuvipa.compression.mapper;
+package org.zjuvipa.compression.backend.mapper;
 
-import org.zjuvipa.model.entity.Crack;
+import org.zjuvipa.compression.model.entity.Crack;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**

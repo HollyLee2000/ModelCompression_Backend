@@ -2,10 +2,12 @@ package org.zjuvipa.compression.model.info;
 
 import lombok.Data;
 import org.zjuvipa.compression.model.entity.History;
-import org.zjuvipa.util.MyBeanUtils;
+import org.zjuvipa.compression.common.util.MyBeanUtils;
+
+import java.io.Serializable;
 
 @Data
-public class HistoryInfo {
+public class HistoryInfo implements Serializable {
 
     private Integer historyId;
     private String modelName;

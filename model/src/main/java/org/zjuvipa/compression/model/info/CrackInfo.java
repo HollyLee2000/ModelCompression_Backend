@@ -2,7 +2,7 @@ package org.zjuvipa.compression.model.info;
 
 import lombok.Data;
 import org.zjuvipa.compression.model.entity.Crack;
-import org.zjuvipa.util.MyBeanUtils;
+import org.zjuvipa.compression.common.util.MyBeanUtils;
 
 @Data
 public class CrackInfo {

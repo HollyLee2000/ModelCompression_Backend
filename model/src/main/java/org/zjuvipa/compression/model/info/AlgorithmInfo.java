@@ -1,7 +1,7 @@
 package org.zjuvipa.compression.model.info;
 
 import org.zjuvipa.compression.model.entity.Algorithm;
-import org.zjuvipa.util.MyBeanUtils;
+import org.zjuvipa.compression.common.util.MyBeanUtils;
 
 import lombok.Data;
 

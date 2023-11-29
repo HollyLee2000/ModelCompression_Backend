@@ -15,7 +15,7 @@ server:
   port: 7996
 mybatis-plus:
   mapper-locations: classpath*:/mapper/*Mapper.xml
-  type-aliases-package: org.zjuvipa.entity
+  type-aliases-package: org.zjuvipa.compression.model.entity
 
 logging:
   level:

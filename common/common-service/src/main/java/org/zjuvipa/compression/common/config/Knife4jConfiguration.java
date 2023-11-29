@@ -1,4 +1,4 @@
-package org.zjuvipa.compression.backend.config;
+package org.zjuvipa.compression.common.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

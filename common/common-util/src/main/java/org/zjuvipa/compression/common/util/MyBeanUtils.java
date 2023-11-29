@@ -1,4 +1,4 @@
-package org.zjuvipa.compression.util;
+package org.zjuvipa.compression.common.util;
 
 //import org.zjuvipa.model.entity.Problem;
 //import org.zjuvipa.model.info.ProblemInfo;

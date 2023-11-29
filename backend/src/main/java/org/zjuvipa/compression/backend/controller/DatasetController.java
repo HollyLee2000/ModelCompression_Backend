@@ -1,4 +1,4 @@
-package org.zjuvipa.compression.controller;
+package org.zjuvipa.compression.backend.controller;
 
 
 import io.swagger.annotations.Api;
@@ -7,15 +7,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
-import org.zjuvipa.compression.util.ResultBean;
-import org.zjuvipa.model.info.DatasetInfo;
-import org.zjuvipa.model.info.PictureDataInfo;
-import org.zjuvipa.model.info.UserInfo;
-import org.zjuvipa.model.req.*;
-import org.zjuvipa.model.res.*;
-import org.zjuvipa.compression.service.IDatasetService;
-import org.zjuvipa.compression.service.IPictureDataService;
-import org.zjuvipa.compression.service.IUserService;
+import org.zjuvipa.compression.common.util.ResultBean;
+import org.zjuvipa.compression.model.info.DatasetInfo;
+import org.zjuvipa.compression.model.info.PictureDataInfo;
+import org.zjuvipa.compression.model.info.UserInfo;
+import org.zjuvipa.compression.model.req.*;
+import org.zjuvipa.compression.model.res.*;
+import org.zjuvipa.compression.backend.service.IDatasetService;
+import org.zjuvipa.compression.backend.service.IPictureDataService;
+import org.zjuvipa.compression.backend.service.IUserService;
 
 import java.io.IOException;
 import java.io.File;

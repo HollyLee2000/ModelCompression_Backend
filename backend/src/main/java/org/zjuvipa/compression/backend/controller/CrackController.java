@@ -1,4 +1,4 @@
-package org.zjuvipa.compression.controller;
+package org.zjuvipa.compression.backend.controller;
 
 
 import io.swagger.annotations.Api;

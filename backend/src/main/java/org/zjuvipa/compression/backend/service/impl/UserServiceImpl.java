@@ -1,9 +1,9 @@
-package org.zjuvipa.compression.service.impl;
+package org.zjuvipa.compression.backend.service.impl;
 
-import org.zjuvipa.compression.mapper.UserMapper;
-import org.zjuvipa.compression.service.IUserService;
-import org.zjuvipa.model.entity.User;
-import org.zjuvipa.model.info.UserInfo;
+import org.zjuvipa.compression.backend.mapper.UserMapper;
+import org.zjuvipa.compression.backend.service.IUserService;
+import org.zjuvipa.compression.model.entity.User;
+import org.zjuvipa.compression.model.info.UserInfo;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 

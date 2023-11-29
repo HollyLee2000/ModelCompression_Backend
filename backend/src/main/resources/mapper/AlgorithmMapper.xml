@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="org.zjuvipa.mapper.AlgorithmMapper">
-    <select id="findAlgoByName" resultType="org.zjuvipa.entity.Algorithm">
+<mapper namespace="org.zjuvipa.compression.backend.mapper.AlgorithmMapper">
+    <select id="findAlgoByName" resultType="Algorithm">
         select * from algorithm
         where algo_name = #{algorithmName}
     </select>
-    <select id="searchAlgorithm" resultType="org.zjuvipa.entity.Algorithm">
+    <select id="searchAlgorithm" resultType="Algorithm">
         select * from algorithm
     </select>
     <insert id="uploadAlgorithm">

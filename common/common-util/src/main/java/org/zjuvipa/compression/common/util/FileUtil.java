@@ -1,4 +1,4 @@
-package org.zjuvipa.compression.util;
+package org.zjuvipa.compression.common.util;
 import org.apache.commons.compress.archivers.ArchiveEntry;
 import org.apache.commons.compress.archivers.zip.Zip64Mode;
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;

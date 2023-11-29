@@ -1,9 +1,9 @@
-package org.zjuvipa.compression.service;
+package org.zjuvipa.compression.backend.service;
 
-import org.zjuvipa.model.entity.Dataset;
+import org.zjuvipa.compression.model.entity.Dataset;
 import com.baomidou.mybatisplus.extension.service.IService;
-import org.zjuvipa.model.info.DatasetInfo;
-import org.zjuvipa.model.res.GetDatasetInfoRes;
+import org.zjuvipa.compression.model.info.DatasetInfo;
+import org.zjuvipa.compression.model.res.GetDatasetInfoRes;
 
 import java.util.List;
 

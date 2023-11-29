@@ -3,9 +3,9 @@ package org.zjuvipa.compression.distributor.service.impl;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 import org.zjuvipa.compression.distributor.service.IDistributorHistoryService;
-import org.zjuvipa.compression.distributor.info.HistoryInfo;
+import org.zjuvipa.compression.model.info.HistoryInfo;
 import org.zjuvipa.compression.distributor.mapper.DistributorHistoryMapper;
-import org.zjuvipa.compression.distributor.entity.History;
+import org.zjuvipa.compression.model.entity.History;
 
 
 
@@ -43,6 +43,10 @@ public class DistributorHistoryServiceImpl extends ServiceImpl<DistributorHistor
     public boolean updateHistory(int historyId){
         historyMapper.updateHistory(historyId);
         return true;
+    }
+
+    public void setTaskIsTraining(int historyId){
+        historyMapper.setTaskIsTraining(historyId);
     }
 
 

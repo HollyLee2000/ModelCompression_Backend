@@ -1,4 +1,4 @@
-package org.zjuvipa.compression.controller;
+package org.zjuvipa.compression.backend.controller;
 
 
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -18,19 +18,21 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import org.springframework.web.multipart.MultipartFile;
-import org.zjuvipa.compression.util.*;
-import org.zjuvipa.model.info.UserInfo;
-import org.zjuvipa.model.req.*;
-import org.zjuvipa.model.res.*;
-import org.zjuvipa.compression.service.IGetRankService;
-import org.zjuvipa.compression.service.IAlgorithmService;
-import org.zjuvipa.compression.service.IHistoryService;
-import org.zjuvipa.compression.service.IUserService;
-import org.zjuvipa.compression.util.CookieUtil;
-import org.zjuvipa.compression.util.MD5Util;
-import org.zjuvipa.compression.util.ResultBean;
-import org.zjuvipa.compression.util.UUIDUtil;
-import org.zjuvipa.model.info.rankListInfo;
+import org.zjuvipa.compression.common.util.*;
+import org.zjuvipa.compression.common.util.*;
+import org.zjuvipa.compression.common.util.*;
+import org.zjuvipa.compression.model.info.UserInfo;
+import org.zjuvipa.compression.model.req.*;
+import org.zjuvipa.compression.model.res.*;
+import org.zjuvipa.compression.backend.service.IGetRankService;
+import org.zjuvipa.compression.backend.service.IAlgorithmService;
+import org.zjuvipa.compression.backend.service.IHistoryService;
+import org.zjuvipa.compression.backend.service.IUserService;
+import org.zjuvipa.compression.common.util.CookieUtil;
+import org.zjuvipa.compression.common.util.MD5Util;
+import org.zjuvipa.compression.common.util.ResultBean;
+import org.zjuvipa.compression.common.util.UUIDUtil;
+import org.zjuvipa.compression.model.info.rankListInfo;
 
 import javax.annotation.Resource;
 import javax.imageio.ImageIO;
@@ -46,7 +48,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-import static org.zjuvipa.compression.util.Base64Util.encode;
+import static org.zjuvipa.compression.common.util.Base64Util.encode;
 
 /**
  * <p>
@@ -67,6 +69,8 @@ public class UserController {
     @Autowired
     IGetRankService iGetRankService;
 
+
+    //这种需要同时导入依赖包且修改@ComponentScan的basePackages才能自动注入，因为@ComponentScan会默认扫描当前包
     @Autowired
     private DefaultKaptcha defaultKaptcha;
 

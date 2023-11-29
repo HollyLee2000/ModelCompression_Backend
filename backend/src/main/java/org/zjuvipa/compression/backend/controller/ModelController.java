@@ -1,4 +1,4 @@
-package org.zjuvipa.compression.controller;
+package org.zjuvipa.compression.backend.controller;
 
 
 import io.swagger.annotations.Api;
@@ -7,18 +7,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
-import org.zjuvipa.compression.util.ResultBean;
-import org.zjuvipa.model.info.AlgorithmInfo;
-import org.zjuvipa.model.info.DatasetInfo;
-import org.zjuvipa.model.info.ModelInfo;
-import org.zjuvipa.model.info.UserInfo;
-import org.zjuvipa.model.req.*;
-import org.zjuvipa.model.res.AddModelRes;
-import org.zjuvipa.model.res.FindModelRes;
-import org.zjuvipa.model.res.ModelRes;
-import org.zjuvipa.compression.service.IAlgorithmService;
-import org.zjuvipa.compression.service.IDatasetService;
-import org.zjuvipa.compression.service.IModelService;
+import org.zjuvipa.compression.common.util.ResultBean;
+import org.zjuvipa.compression.model.info.AlgorithmInfo;
+import org.zjuvipa.compression.model.info.DatasetInfo;
+import org.zjuvipa.compression.model.info.ModelInfo;
+import org.zjuvipa.compression.model.info.UserInfo;
+import org.zjuvipa.compression.model.req.*;
+import org.zjuvipa.compression.model.res.AddModelRes;
+import org.zjuvipa.compression.model.res.FindModelRes;
+import org.zjuvipa.compression.model.res.ModelRes;
+import org.zjuvipa.compression.backend.service.IAlgorithmService;
+import org.zjuvipa.compression.backend.service.IDatasetService;
+import org.zjuvipa.compression.backend.service.IModelService;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;

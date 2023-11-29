@@ -1,7 +1,7 @@
-package org.zjuvipa.compression.mapper;
+package org.zjuvipa.compression.backend.mapper;
 
 import org.apache.ibatis.annotations.Param;
-import org.zjuvipa.model.entity.Histories;
+import org.zjuvipa.compression.model.entity.Histories;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 import java.util.List;

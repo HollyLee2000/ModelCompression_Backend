@@ -1,10 +1,10 @@
-package org.zjuvipa.compression.service;
+package org.zjuvipa.compression.backend.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import org.zjuvipa.model.entity.rankList;
-import org.zjuvipa.model.info.rankListInfo;
-import org.zjuvipa.model.info.qualitativeInfo;
-import org.zjuvipa.model.info.leaderboardInfo;
+import org.zjuvipa.compression.model.entity.rankList;
+import org.zjuvipa.compression.model.info.rankListInfo;
+import org.zjuvipa.compression.model.info.qualitativeInfo;
+import org.zjuvipa.compression.model.info.leaderboardInfo;
 import java.util.List;
 
 /**

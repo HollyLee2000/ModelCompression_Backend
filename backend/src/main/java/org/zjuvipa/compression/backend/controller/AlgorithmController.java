@@ -1,4 +1,4 @@
-package org.zjuvipa.compression.controller;
+package org.zjuvipa.compression.backend.controller;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -12,17 +12,17 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import org.springframework.web.bind.annotation.RestController;
-import org.zjuvipa.compression.util.ResultBean;
-import org.zjuvipa.model.info.*;
-import org.zjuvipa.model.req.*;
-import org.zjuvipa.model.res.*;
-import org.zjuvipa.compression.service.IAlgorithmService;
-import org.zjuvipa.compression.service.IModelService;
-import org.zjuvipa.compression.service.IPictureDataService;
+import org.zjuvipa.compression.common.util.ResultBean;
+import org.zjuvipa.compression.model.info.*;
+import org.zjuvipa.compression.model.req.*;
+import org.zjuvipa.compression.model.res.*;
+import org.zjuvipa.compression.backend.service.IAlgorithmService;
+import org.zjuvipa.compression.backend.service.IModelService;
+import org.zjuvipa.compression.backend.service.IPictureDataService;
 
 import org.springframework.web.bind.annotation.*;
 
-import org.zjuvipa.compression.service.IDatasetService;
+import org.zjuvipa.compression.backend.service.IDatasetService;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;

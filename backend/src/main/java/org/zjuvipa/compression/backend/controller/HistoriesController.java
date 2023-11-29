@@ -1,4 +1,4 @@
-package org.zjuvipa.compression.controller;
+package org.zjuvipa.compression.backend.controller;
 
 
 import io.swagger.annotations.ApiOperation;
@@ -6,16 +6,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
-//import org.zjuvipa.model.info.UserInfo;
-import org.zjuvipa.compression.util.ResultBean;
-import org.zjuvipa.model.req.GetUserHistoriesReq;
-import org.zjuvipa.model.res.GetUserHistoriesRes;
-import org.zjuvipa.compression.service.IAlgorithmService;
-import org.zjuvipa.compression.service.IHistoriesService;
-import org.zjuvipa.compression.service.IHistoryService;
-import org.zjuvipa.model.res.FindHistoryRes;
-import org.zjuvipa.model.info.*;
-import org.zjuvipa.model.req.*;
+//import org.zjuvipa.compression.model.info.UserInfo;
+import org.zjuvipa.compression.common.util.ResultBean;
+import org.zjuvipa.compression.model.req.GetUserHistoriesReq;
+import org.zjuvipa.compression.model.res.GetUserHistoriesRes;
+import org.zjuvipa.compression.backend.service.IAlgorithmService;
+import org.zjuvipa.compression.backend.service.IHistoriesService;
+import org.zjuvipa.compression.backend.service.IHistoryService;
+import org.zjuvipa.compression.model.res.FindHistoryRes;
+import org.zjuvipa.compression.model.info.*;
+import org.zjuvipa.compression.model.req.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;

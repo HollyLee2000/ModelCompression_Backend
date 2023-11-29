@@ -1,9 +1,9 @@
-package org.zjuvipa.compression.mapper;
+package org.zjuvipa.compression.backend.mapper;
 
 import org.apache.ibatis.annotations.Param;
-import org.zjuvipa.model.entity.PictureData;
+import org.zjuvipa.compression.model.entity.PictureData;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import org.zjuvipa.model.info.PictureDataInfo;
+import org.zjuvipa.compression.model.info.PictureDataInfo;
 
 import java.util.List;
 

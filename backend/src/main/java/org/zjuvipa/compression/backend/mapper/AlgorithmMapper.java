@@ -1,10 +1,10 @@
-package org.zjuvipa.compression.mapper;
+package org.zjuvipa.compression.backend.mapper;
 
 import org.apache.ibatis.annotations.Param;
-import org.zjuvipa.model.entity.Algorithm;
+import org.zjuvipa.compression.model.entity.Algorithm;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import org.zjuvipa.model.entity.User;
-import org.zjuvipa.model.info.AlgorithmInfo;
+import org.zjuvipa.compression.model.entity.User;
+import org.zjuvipa.compression.model.info.AlgorithmInfo;
 
 import java.util.List;
 

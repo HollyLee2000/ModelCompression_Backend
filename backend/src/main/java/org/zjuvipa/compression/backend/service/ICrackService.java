@@ -1,6 +1,6 @@
-package org.zjuvipa.compression.service;
+package org.zjuvipa.compression.backend.service;
 
-import org.zjuvipa.model.entity.Crack;
+import org.zjuvipa.compression.model.entity.Crack;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**

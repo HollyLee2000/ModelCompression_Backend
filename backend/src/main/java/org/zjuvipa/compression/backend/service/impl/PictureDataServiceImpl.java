@@ -1,9 +1,9 @@
-package org.zjuvipa.compression.service.impl;
+package org.zjuvipa.compression.backend.service.impl;
 
-import org.zjuvipa.compression.service.IPictureDataService;
-import org.zjuvipa.model.entity.PictureData;
-import org.zjuvipa.model.info.PictureDataInfo;
-import org.zjuvipa.compression.mapper.PictureDataMapper;
+import org.zjuvipa.compression.backend.service.IPictureDataService;
+import org.zjuvipa.compression.model.entity.PictureData;
+import org.zjuvipa.compression.model.info.PictureDataInfo;
+import org.zjuvipa.compression.backend.mapper.PictureDataMapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 

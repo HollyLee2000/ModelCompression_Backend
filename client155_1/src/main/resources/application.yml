@@ -1,7 +1,7 @@
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/modelcompression
+    url: jdbc:mysql://localhost:3306/mc_client155_1
 #    ?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=Asia/Shanghai
 #    username: root
 #    password: 123456
@@ -15,7 +15,7 @@ server:
   port: 8384
 mybatis-plus:
   mapper-locations: classpath*:/mapper/*Mapper.xml
-  type-aliases-package: org.zjuvipa.entity
+  type-aliases-package: org.zjuvipa.compression.model.entity
 
 logging:
   level:

@@ -1,10 +1,10 @@
-package org.zjuvipa.compression.client155_2.info;
+package org.zjuvipa.compression.model.info;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
-import org.zjuvipa.compression.client155_2.entity.ClientHistory;
-import org.zjuvipa.compression.client155_2.util.MyBeanUtils;
+import org.zjuvipa.compression.model.entity.ClientHistory;
+import org.zjuvipa.compression.common.util.MyBeanUtils;
 
 @Data
 public class ClientHistoryInfo {

@@ -1,4 +1,4 @@
-package org.zjuvipa.compression.controller;
+package org.zjuvipa.compression.backend.controller;
 
 
 import io.swagger.annotations.Api;
@@ -7,12 +7,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 //import org.zjuvipa.config.Constant;
-import org.zjuvipa.compression.service.*;
-import org.zjuvipa.compression.util.ResultBean;
-import org.zjuvipa.model.info.*;
-import org.zjuvipa.model.req.FindHistoriesByUserReq;
-//import org.zjuvipa.model.res.AddHistoryRes;
-import org.zjuvipa.model.res.FindHistoryRes;
+import org.zjuvipa.compression.backend.service.*;
+import org.zjuvipa.compression.backend.service.*;
+import org.zjuvipa.compression.common.util.ResultBean;
+import org.zjuvipa.compression.backend.service.*;
+import org.zjuvipa.compression.model.info.*;
+import org.zjuvipa.compression.model.req.FindHistoriesByUserReq;
+//import org.zjuvipa.compression.model.res.AddHistoryRes;
+import org.zjuvipa.compression.model.res.FindHistoryRes;
 
 
 import javax.annotation.Resource;
