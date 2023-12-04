@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import org.springframework.web.bind.annotation.RestController;
 import org.zjuvipa.compression.common.util.ResultBean;
+import org.zjuvipa.compression.model.entity.GPUInfo;
 import org.zjuvipa.compression.model.info.*;
 import org.zjuvipa.compression.model.req.*;
 import org.zjuvipa.compression.model.res.*;
@@ -33,6 +34,8 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * <p>
@@ -162,9 +165,8 @@ public class AlgorithmController {
 
 
         System.out.println("command: " + command);
-        Process process1 = Runtime.getRuntime().exec(command);
-        System.out.println("Point 1");
 
+        Process process1 = Runtime.getRuntime().exec(command);
         BufferedReader in = new BufferedReader(new InputStreamReader(process1.getInputStream()));
         List<String> lines = new ArrayList<String>();
         String line;
@@ -323,6 +325,60 @@ public class AlgorithmController {
         result.setMsg(command1);
         System.out.println("result:" + callAlgorithmRes);
         return result;
+    }
+
+
+    @CrossOrigin
+    @ApiOperation("查询显卡信息")
+    @PostMapping("gpuInfoList")
+    public ResultBean<List<GPUInfo>> gpuInfoList(){
+        ResultBean<List<GPUInfo>> result = new ResultBean<>();
+        List<GPUInfo> gpuInfoList = getGPUMemoryUsage();
+        System.out.println("查询到信息： ");
+        for (GPUInfo gpuInfo : gpuInfoList) {
+            System.out.println(gpuInfo);
+        }
+        result.setData(gpuInfoList);
+        return result;
+    }
+
+
+
+
+    public static List<GPUInfo> getGPUMemoryUsage() {
+        List<GPUInfo> gpuInfoList = new ArrayList<>();
+
+        try {
+            Process process = Runtime.getRuntime().exec("nvidia-smi");
+            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            String line;
+            Pattern memoryPattern = Pattern.compile("(\\d+)MiB / (\\d+)MiB");
+            while ((line = reader.readLine()) != null) {
+                if(line.contains("NVIDIA GeForce RTX 3060") || line.contains("Quadro P6000")  || line.contains("NVIDIA A40")){
+                    String gpuName = "";
+                    if(line.contains("NVIDIA GeForce RTX 3060")){
+                        gpuName = "NVIDIA GeForce RTX 3060";
+                    }else if(line.contains("Quadro P6000")){
+                        gpuName = "Quadro P6000";
+                    }else if(line.contains("NVIDIA A40")){
+                        gpuName = "NVIDIA A40";
+                    }
+                    line = reader.readLine();
+                    Matcher memoryMatcher = memoryPattern.matcher(line);
+                    if (memoryMatcher.find()) {
+                        int tot_mem = Integer.parseInt(memoryMatcher.group(2));
+                        int remain_mem = tot_mem - Integer.parseInt(memoryMatcher.group(1));
+                        gpuInfoList.add(new GPUInfo(gpuName, tot_mem, remain_mem));
+                    }
+                }
+            }
+            reader.close();
+            process.waitFor();
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        return gpuInfoList;
     }
 
 

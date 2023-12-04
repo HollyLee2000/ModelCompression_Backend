@@ -23,4 +23,16 @@ public interface ClientHistoryMapper extends BaseMapper<ClientHistory> {
                                  String script);
 
     public List<ClientHistory> findHistoryById(int historyid);
+
+    public boolean updateHistoryAfterPruned(int taskid, String status, String paramschange, String flopschange,
+                                            String accchange, String losschange, String prunedpath,
+                                            String structureafterpruned, String logpath, int totepoch, int currentepoch);
+
+    public List<ClientHistory> findWaitingTask();
+
+    public List<ClientHistory> findExecutingTask();
+
+    public boolean updateHistoryAfterLaunch(int taskid);
+
+    public boolean updateHistoryAfterFailed(int taskid);
 }

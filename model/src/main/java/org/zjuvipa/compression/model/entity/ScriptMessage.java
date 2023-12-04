@@ -5,7 +5,17 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper = false)
-public class RabbitMQMessage {
-    private String client;
-    private String message;
+public class ScriptMessage {
+    private String action;
+    private Integer taskId;
+    private String status;
+    private String paramsChange;
+    private String flopsChange;
+    private String accChange;
+    private String lossChange;
+    private String prunedPath;
+    private String structureAfterPruned;
+    private String logPath;
+    private Integer totEpoch;
+    private Integer currentEpoch;
 }

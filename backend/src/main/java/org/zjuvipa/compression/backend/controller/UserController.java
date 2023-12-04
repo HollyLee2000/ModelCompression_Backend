@@ -410,21 +410,29 @@ public class UserController {
     @CrossOrigin
     @ApiOperation("上传要训练的历史记录")
     @PostMapping("/SubmitTrainingHistory")
-    public ResultBean<UploadPicturesRes> SubmitTrainingHistory(@RequestBody SubmitTrainingHistoryReq req) throws IOException {
-        String username = req.getUsername();
+    public ResultBean<UploadPicturesRes> SubmitTrainingHistory(@RequestBody SubmitTrainingHistoryReq req) throws Exception {
+        String[] parts = req.getUsername().split(" "); // 使用空格分隔字符串
+        String username;
+        String tot_epoch;
+        if (parts.length == 2) {
+            username  = parts[0];
+            tot_epoch = parts[1];
+        } else {
+            throw new RuntimeException("Invalid parameter: " + req.getUsername());
+        }
 
         ResultBean<UploadPicturesRes> result = new ResultBean<>();
         UploadPicturesRes res = new UploadPicturesRes();
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
         Date date = new Date();
         String day = df.format(date);  //放弃转换成String, 直接比较date
-        System.out.println("Debug!!!: "+req.getUsername()+" "+req.getModelname()+" "+req.getTasktype()+" "+req.getCheckpointpath()+" "+
+        System.out.println("Debug!!!: "+username+" "+req.getModelname()+" "+req.getTasktype()+" "+req.getCheckpointpath()+" "+
                 req.getStatus()+" "+req.getParamschange()+" "+req.getFlopschange()+" "+req.getAccchange()+" "+req.getLosschange()+" "+req.getPrunedpath()+" "+day
                 +" "+req.getStructurebeforepruned()+" "+req.getStructureafterpruned()+" "+req.getLogpath());
 
-        res.setSucceed(iHistoryService.uploadTrainingHistory(req.getModelname(), req.getTasktype(), req.getCheckpointpath(), req.getUsername(),
+        res.setSucceed(iHistoryService.uploadTrainingHistory(req.getModelname(), req.getTasktype(), req.getCheckpointpath(), username,
                 day, req.getStatus(),req.getParamschange(),req.getFlopschange(),req.getAccchange(),req.getLosschange(), req.getPrunedpath(),
-                req.getStructurebeforepruned(), req.getStructureafterpruned(), req.getLogpath(), 1, 3, 0, req.getScript(), req.getClient()));
+                req.getStructurebeforepruned(), req.getStructureafterpruned(), req.getLogpath(), 1, Integer.parseInt(tot_epoch), 0, req.getScript(), req.getClient()));
         //1表示需要训练，2表示已经分发给了客户端
         //3是total epoch, 后期要根据具体数据集更改
 
