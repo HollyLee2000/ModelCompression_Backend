@@ -5,6 +5,17 @@
         select * from task
         where is_training=1
     </select>
+
+    <select id="findWaitingTask" resultType="ClientHistory">
+        select * from task
+        where status='Waiting' order by task_id asc;
+    </select>
+
+    <select id="findExecutingTask" resultType="ClientHistory">
+        select * from task
+        where status='Ready' or status='Pruning'  or status='Finetuning';
+    </select>
+
     <select id="findHistoryById" resultType="ClientHistory">
         select * from task
         where task_id=#{historyid}
@@ -16,4 +27,25 @@
         values (#{historyid}, #{username}, #{status}, #{paramschange}, #{flopschange}, #{accchange}, #{losschange},
         #{prunedpath}, #{structureafterpruned}, #{logpath}, #{totepoch}, #{currentepoch}, #{script});
     </insert>
+
+
+    <update id="updateHistoryAfterPruned">
+        update task
+        set status=#{status}, params_change=#{paramschange}, flops_change=#{flopschange}, acc_change=#{accchange},
+        loss_change=#{losschange}, pruned_path=#{prunedpath}, structure_after_pruned=#{structureafterpruned},
+        log_path=#{logpath}, tot_epoch=#{totepoch}, current_epoch=#{currentepoch}
+        where task_id=#{taskid};
+    </update>
+
+    <update id="updateHistoryAfterLaunch">
+        update task
+        set status='Ready'
+        where task_id=#{taskid};
+    </update>
+
+    <update id="updateHistoryAfterFailed">
+        update task
+        set status='Failed'
+        where task_id=#{taskid};
+    </update>
 </mapper>

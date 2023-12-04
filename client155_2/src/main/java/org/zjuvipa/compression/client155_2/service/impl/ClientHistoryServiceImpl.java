@@ -60,4 +60,31 @@ public class ClientHistoryServiceImpl extends ServiceImpl<ClientHistoryMapper, C
                 structureafterpruned, logpath, totepoch, currentepoch, script);
         return true;
     }
+
+    @Override
+    public boolean updateHistoryAfterPruned(int taskid, String status, String paramschange, String flopschange, String accchange, String losschange, String prunedpath, String structureafterpruned, String logpath, int totepoch, int currentepoch) {
+        historyMapper.updateHistoryAfterPruned(taskid, status, paramschange, flopschange, accchange, losschange, prunedpath,
+                structureafterpruned, logpath, totepoch, currentepoch);
+        return true;
+    }
+
+    @Override
+    public List<ClientHistory> findWaitingTask() {
+        return historyMapper.findWaitingTask();
+    }
+
+    @Override
+    public List<ClientHistory> findExecutingTask() {
+        return historyMapper.findExecutingTask();
+    }
+
+    public boolean updateHistoryAfterLaunch(int taskid){
+        historyMapper.updateHistoryAfterLaunch(taskid);
+        return true;
+    }
+
+    public boolean updateHistoryAfterFailed(int taskid){
+        historyMapper.updateHistoryAfterFailed(taskid);
+        return true;
+    }
 }

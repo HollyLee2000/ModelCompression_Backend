@@ -1,4 +1,13 @@
 spring:
+  rabbitmq:
+    host: 10.214.242.155 # 你的虚拟机IP
+    port: 5672 # 端口
+    virtual-host: /vipaCompression # 虚拟主机
+    username: vipaCompression # 用户名
+    password: vipa@404 # 密码
+    listener:
+      simple:
+        prefetch: 1 # 每次只能获取一条消息，处理完成才能获取下一个消息
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/modelcompression

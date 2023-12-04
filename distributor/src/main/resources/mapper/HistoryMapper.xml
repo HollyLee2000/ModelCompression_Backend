@@ -15,4 +15,30 @@
         set is_training=2
         where history_id=#{param1}
     </update>
+
+    <update id="setTaskIsReady">
+        update history
+        set status='Ready'
+        where history_id=#{param1}
+    </update>
+
+    <update id="setTaskIsFailed">
+        update history
+        set status='Failed'
+        where history_id=#{param1}
+    </update>
+
+    <update id="updateClient">
+        update history
+        set client=#{client}
+        where history_id=#{historyId}
+    </update>
+
+    <update id="SyncHistory">
+        update history
+        set status=#{status}, params_change=#{paramschange}, flops_change=#{flopschange}, acc_change=#{accchange},
+        loss_change=#{losschange}, pruned_path=#{prunedpath}, structure_after_pruned=#{structureafterpruned},
+        log_path=#{logpath}, tot_epoch=#{totepoch}, current_epoch=#{currentepoch}
+        where history_id=#{taskid};
+    </update>
 </mapper>
