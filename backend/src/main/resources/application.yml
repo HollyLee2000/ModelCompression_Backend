@@ -9,8 +9,8 @@ spring:
     password: 2000114lhl  # 这个是服务器上的
   servlet:
     multipart:
-      max-file-size: 100MB
-      max-request-size: 100MB
+      max-file-size: 500MB
+      max-request-size: 500MB
 server:
   port: 7996
 mybatis-plus:
