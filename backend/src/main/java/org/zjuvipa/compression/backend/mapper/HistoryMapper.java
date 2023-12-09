@@ -2,6 +2,7 @@ package org.zjuvipa.compression.backend.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.zjuvipa.compression.model.entity.History;
+import org.zjuvipa.compression.model.req.FindHistoriesByUserReq;
 
 import java.util.List;
 
@@ -18,7 +19,7 @@ public interface HistoryMapper extends BaseMapper<History> {
 
     public History findHistoryByName(String username, String historyName);
 
-    public List<History> findHistoriesByUser(String username);
+    public List<History> findHistoriesByUser(FindHistoriesByUserReq req);
 
     public List<History> findAllHistories(String username);
 

@@ -5,11 +5,31 @@
         select * from algorithm ORDER BY `rank` ASC;
     </select>
     <select id="getQualitativeComparison" resultType="qualitativeList">
-        SELECT * FROM algorithm WHERE dataset LIKE CONCAT(#{dataset}, '%') AND model LIKE CONCAT(#{model}, '%') ORDER BY dataset, model;
+        SELECT * FROM algorithm
+        <where>
+            <if test="dataset != null and dataset != ''">
+                and dataset = #{dataset}
+            </if>
+            <if test="model != null and model != ''">
+                and model = #{model}
+            </if>
+        </where>
+        ORDER BY dataset, model;
     </select>
     <select id="getLeaderboard" resultType="leaderboardList">
-        SELECT * FROM leaderboard WHERE dataset LIKE CONCAT(#{dataset}, '%') AND model LIKE CONCAT(#{model}, '%') ORDER BY dataset, model;
+        SELECT * FROM leaderboard
+        <where>
+            <if test="dataset != null and dataset != ''">
+                and dataset = #{dataset}
+            </if>
+            <if test="model != null and model != ''">
+                and model = #{model}
+            </if>
+        </where>
+        ORDER BY dataset, model;
     </select>
+<!--    WHERE dataset LIKE CONCAT(#{dataset}, '%') AND model LIKE CONCAT(#{model}, '%')-->
+    <!--    WHERE dataset LIKE CONCAT(#{dataset}, '%') AND model LIKE CONCAT(#{model}, '%')-->
 
 
 

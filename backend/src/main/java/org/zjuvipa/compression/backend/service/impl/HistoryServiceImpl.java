@@ -1,11 +1,14 @@
 package org.zjuvipa.compression.backend.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import org.springframework.stereotype.Service;
 import org.zjuvipa.compression.backend.service.IHistoryService;
 import org.zjuvipa.compression.model.entity.History;
 import org.zjuvipa.compression.model.info.HistoryInfo;
 import org.zjuvipa.compression.backend.mapper.HistoryMapper;
+import org.zjuvipa.compression.model.req.FindHistoriesByUserReq;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
@@ -59,16 +62,23 @@ public class HistoryServiceImpl extends ServiceImpl<HistoryMapper, History> impl
     }
 
     @Override
-    public List<HistoryInfo> findHistoriesByUser(String username){
-        List<History> histories =  historyMapper.findHistoriesByUser(username);
-        List<HistoryInfo> historyInfos = new ArrayList<>();
-        if(histories.size()>0) {
-            for(History history : histories){
-                historyInfos.add(history.change());
-            }
-            return historyInfos;
-        }
-        return null;
+    public PageInfo<History> findHistoriesByUser(Integer pageNum, Integer pageSize, FindHistoriesByUserReq req){
+        PageHelper.startPage(pageNum,pageSize);
+        List<History> histories =  historyMapper.findHistoriesByUser(req);
+        System.out.println("装页之前的数据：" + histories);
+        PageInfo<History> pageInfo = new PageInfo<>(histories);
+        System.out.println("装页之后的数据：" + pageInfo);
+        return pageInfo;
+//        List<HistoryInfo> historyInfos = new ArrayList<>();
+//        if(histories.size()>0) {
+//            for(History history : histories){
+//                historyInfos.add(history.change());
+//            }
+//            PageInfo<HistoryInfo> pageInfo = new PageInfo<>(historyInfos);
+//            System.out.println("装页之后的数据：" + pageInfo);
+//            return pageInfo;
+//        }
+//        return null;
     }
 
     @Override

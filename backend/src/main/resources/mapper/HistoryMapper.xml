@@ -7,7 +7,25 @@
     </insert>
     <select id="findHistoriesByUser" resultType="History">
         select * from history
-        where username=#{username}
+        <where>
+            <if test="model != null and model != ''">
+                and model_name like concat('%',#{model},'%')
+            </if>
+            <if test="type != null and type != ''">
+                and task_type = #{type}
+            </if>
+            <if test="client != null and client != ''">
+                and client = #{client}
+            </if>
+            <if test="createTimeBegin != null and createTimeBegin != ''">
+                and submit_time >= #{createTimeBegin}
+            </if>
+            <if test="createTimeEnd != null and createTimeEnd != ''">
+                and submit_time &lt;= #{createTimeEnd}
+            </if>
+            and username=#{username}
+        </where>
+        order by submit_time DESC, client DESC, task_type DESC, model_name DESC
     </select>
     <select id="findAllHistories" resultType="History">
         select * from algorithm

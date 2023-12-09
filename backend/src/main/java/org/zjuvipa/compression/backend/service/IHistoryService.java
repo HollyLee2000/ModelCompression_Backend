@@ -1,8 +1,10 @@
 package org.zjuvipa.compression.backend.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.github.pagehelper.PageInfo;
 import org.zjuvipa.compression.model.entity.History;
 import org.zjuvipa.compression.model.info.HistoryInfo;
+import org.zjuvipa.compression.model.req.FindHistoriesByUserReq;
 
 import java.util.List;
 
@@ -19,7 +21,7 @@ public interface IHistoryService extends IService<History> {
 
     public HistoryInfo findHistoryByName(String username, String historyName);
 
-    public List<HistoryInfo> findHistoriesByUser(String username);
+    public PageInfo<History> findHistoriesByUser(Integer pageNum, Integer pageSize, FindHistoriesByUserReq req);
 
     public List<HistoryInfo> findAllHistories(String username);
 
