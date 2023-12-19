@@ -1,5 +1,10 @@
 package org.zjuvipa.compression.backend.controller;
 
+import cn.hutool.core.date.DateUtil;
+import io.minio.BucketExistsArgs;
+import io.minio.MakeBucketArgs;
+import io.minio.MinioClient;
+import io.minio.PutObjectArgs;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,8 +24,11 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+
+import org.zjuvipa.compression.backend.properties.MinioProperties;
 
 /**
  * <p>
@@ -37,6 +45,9 @@ public class PictureDataController {
 
     @Autowired
     IPictureDataService iPictureDataService;
+
+    @Autowired
+    private MinioProperties minioProperties;
 
     @Resource
     private HttpServletResponse response;
@@ -155,13 +166,14 @@ public class PictureDataController {
 
 
 
-
+    @CrossOrigin
+    @ApiOperation("直接上传单个模型")
+    @PostMapping("/uploadCkpt")
     public String uploadCkpt(MultipartFile file) {
         System.out.println("file.getSize(): " +  file.getSize());
         String suffix = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf(".") + 1,
                 file.getOriginalFilename().length());
         String savePath = "/nfs/lhl/Torch-Pruning/benchmarks/usr_model/";
-        // String savePath = "C:\\OIDPL\\test_user_imgs\\";
         File savePathFile = new File(savePath);
         if (!savePathFile.exists()){
             savePathFile.mkdir();
@@ -174,8 +186,57 @@ public class PictureDataController {
         }
         System.out.println("savePath + filename: " +  savePath + filename);
 
+
+
+        try {
+            // 创建MinioClient对象
+            MinioClient minioClient =
+                    MinioClient.builder()
+                            .endpoint(minioProperties.getEndpointUrl())
+                            .credentials(minioProperties.getAccessKey(),
+                                    minioProperties.getSecreKey())
+                            .build();
+
+            // 创建bucket
+            boolean found =
+                    minioClient.bucketExists(BucketExistsArgs.builder().bucket(minioProperties.getBucketName()).build());
+            if (!found) {
+                // Make a new bucket called 'asiatrip'.
+                minioClient.makeBucket(MakeBucketArgs.builder().bucket(minioProperties.getBucketName()).build());
+            } else {
+                System.out.println("Bucket 'asiatrip' already exists.");
+            }
+
+            //获取上传文件名称
+            // 1 每个上传文件名称唯一的   uuid生成 01.jpg
+            //2 根据当前日期对上传文件进行分组 20230910
+
+            // 20230910/u7r54209l097501.jpg
+            String dateDir = DateUtil.format(new Date(), "yyyyMMdd");
+            String uuid = UUID.randomUUID().toString().replaceAll("-","");
+            String filename4minio = dateDir+"/"+uuid+file.getOriginalFilename();
+
+            // 文件上传
+            minioClient.putObject(
+                    PutObjectArgs.builder().bucket(minioProperties.getBucketName())
+                            .object(filename4minio)
+                            .stream(file.getInputStream(), file.getSize(), -1)
+                            .build());
+
+            //获取上传文件在minio路径
+            //http://127.0.0.1:9000/spzx-bucket/01.jpg
+//            String url = minioProperties.getEndpointUrl()+"/"+minioProperties.getBucketName()+"/"+filename;
+//
+//            return url;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+        //上传到minio服务器
+
         return "10.214.242.155:7996/WorkSpace/benchmarks/usr_model/"+filename;
-        // return "192.168.2.55:7667/img/"+filename;
+
     }
 
     @CrossOrigin

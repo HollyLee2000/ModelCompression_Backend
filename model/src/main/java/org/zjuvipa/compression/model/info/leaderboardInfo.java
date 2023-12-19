@@ -7,7 +7,7 @@ import org.zjuvipa.compression.common.util.MyBeanUtils;
 @Data
 public class leaderboardInfo {
 
-    private Integer algorithmId;
+    private Integer leaderboardId;
 
     private String dataset;
 
@@ -23,17 +23,29 @@ public class leaderboardInfo {
 
     private String accChange2;
 
+    private String paramsChange2;
+
     private String pruned4;
 
     private String accChange4;
+
+    private String paramsChange4;
 
     private String pruned6;
 
     private String accChange6;
 
+    private String paramsChange6;
+
     private String source;
 
-    private String notes;
+    private String notice;
+
+    private String regularizer;
+
+    private String prunerLink;
+
+    private String regularizerLink;
 
     public leaderboardInfo(){}
 

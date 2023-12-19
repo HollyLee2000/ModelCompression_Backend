@@ -57,6 +57,10 @@ public class DistributorHistoryServiceImpl extends ServiceImpl<DistributorHistor
         historyMapper.updateClient(historyId, client);
     }
 
+    public History findHistoryById(int historyId){
+        return historyMapper.findHistoryById(historyId);
+    }
+
     public void setTaskIsFailed(int historyId){
         historyMapper.setTaskIsFailed(historyId);
     }

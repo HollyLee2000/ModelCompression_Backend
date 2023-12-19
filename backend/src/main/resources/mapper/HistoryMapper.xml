@@ -25,7 +25,7 @@
             </if>
             and username=#{username}
         </where>
-        order by submit_time DESC, client DESC, task_type DESC, model_name DESC
+        order by history_id DESC
     </select>
     <select id="findAllHistories" resultType="History">
         select * from algorithm
@@ -39,6 +39,13 @@
         is_training, tot_epoch, current_epoch, script, client)
         values (#{modelname}, #{tasktype}, #{checkpointpath}, #{username}, #{submittime}, #{status}, #{paramschange}, #{flopschange}, #{accchange}, #{losschange},
         #{prunedpath}, #{structurebeforepruned}, #{structureafterpruned}, #{logpath}, #{istrain}, #{totepoch}, #{currentepoch}, #{script}, #{client});
+    </insert>
+
+    <insert id="uploadUploadingHistory">
+        insert into history (model_name, task_type, checkpoint_path, username, submit_time, status, params_change, flops_change, acc_change, loss_change, pruned_path, structure_before_pruned, structure_after_pruned, log_path,
+        is_training, tot_epoch, current_epoch, script, client, dataset, usrModelName)
+        values (#{modelname}, #{tasktype}, #{checkpointpath}, #{username}, #{submittime}, #{status}, #{paramschange}, #{flopschange}, #{accchange}, #{losschange},
+        #{prunedpath}, #{structurebeforepruned}, #{structureafterpruned}, #{logpath}, #{istrain}, #{totepoch}, #{currentepoch}, #{script}, #{client}, #{dataset}, #{usrModelName});
     </insert>
     <select id="findHistoryByName" resultType="History">
         select * from history

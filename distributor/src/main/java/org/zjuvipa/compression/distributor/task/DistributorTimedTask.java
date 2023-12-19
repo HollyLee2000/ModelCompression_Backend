@@ -1,8 +1,13 @@
 package org.zjuvipa.compression.distributor.task;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.type.TypeFactory;
 import io.swagger.annotations.ApiOperation;
+//import jdk.internal.org.objectweb.asm.tree.TryCatchBlockNode;
 import org.springframework.amqp.core.ExchangeTypes;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.annotation.Exchange;
@@ -16,6 +21,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.zjuvipa.compression.model.entity.History;
 import org.zjuvipa.compression.model.entity.RabbitMQMessage;
 import org.zjuvipa.compression.model.entity.ScriptMessage;
 import org.zjuvipa.compression.model.info.HistoryInfo;
@@ -70,6 +76,16 @@ public class DistributorTimedTask {
 //    // 定义定时任务，使用@Scheduled注解指定调度时间表达式
 //    @Scheduled(cron = "0/2 * * * * ?")  //两秒执行一次
 
+    public static String mySubstring(String str){
+        int colonIndex = str.indexOf(":");
+        if (colonIndex != -1) {
+            String extractedString = str.substring(colonIndex + 2);
+            return extractedString;
+        }else{
+            return "";
+        }
+    }
+
     @RabbitListener(bindings = @QueueBinding(
             value = @Queue(name = "direct.server"),
             exchange = @Exchange(name = "vipaCompression.direct", type = ExchangeTypes.DIRECT),
@@ -113,16 +129,71 @@ public class DistributorTimedTask {
             }
         }else if(myObject instanceof ScriptMessage){
             ScriptMessage info = (ScriptMessage) myObject;
-            System.out.println("服务器收到客户端发来的训练同步信息：【" + info + "】" + LocalTime.now());
+            System.out.println("服务器收到任务同步信息：【" + info + "】" + LocalTime.now());
+            if(info.getAction().equals("uploaded")){
+                System.out.println("模型上传测试已结束，更改json文件.....");
+                //根据id拿出来  复原指令（主要看怎么起名字），try这一段，有异常就设为Failed
+                History history = iHistoryService.findHistoryById(info.getTaskId());
+                try{
+                    String model = history.getModelName().split("-")[0];
+                    String dataset = history.getDataset();
+                    String username = history.getUsername();
+                    String ckpt = history.getCheckpointPath();
+                    String usrModelName = history.getUsrModelName();
+
+                    ObjectMapper mapper = new ObjectMapper();
+                    mapper.enable(SerializationFeature.INDENT_OUTPUT); // 启用缩进输出
+                    ObjectWriter writer = mapper.writerWithDefaultPrettyPrinter(); // 使用默认的缩进格式
+                    File jsonFile = new File("/nfs/lhl/ModelCompression/modelzoo.json");
+                    ObjectNode rootNode = (ObjectNode) mapper.readTree(jsonFile);
+                    // 2. 在 JSON 结构中查找满足条件的节点
+                    boolean found = false;
+                    ArrayNode childrenArray = rootNode.withArray("children");
+                    for (int i = 0; i < childrenArray.size(); i++) {
+                        ObjectNode datasetNode = (ObjectNode) childrenArray.get(i);
+                        if (datasetNode.get("name").asText().equals(dataset)) {
+                            ArrayNode modelsArray = datasetNode.withArray("children");
+                            for (int j = 0; j < modelsArray.size(); j++) {
+                                ObjectNode modelNode = (ObjectNode) modelsArray.get(j);
+                                if (modelNode.get("name").asText().equals(model)) {
+                                    // 3. 添加一个新节点
+                                    ObjectNode taskNode = (ObjectNode) modelsArray.get(j);
+                                    ArrayNode taskArray = taskNode.withArray("children");
+                                    System.out.println("taskArray: "+ taskArray);
+                                    ObjectNode newNode = mapper.createObjectNode();
+                                    newNode.put("name", username + ":" + usrModelName);
+                                    newNode.put("type", "usr");
+                                    newNode.put("model_name", dataset + "_" + model + "_" + username + ":" + usrModelName);
+                                    newNode.put("status", "done");
+                                    newNode.put("path", ckpt);
+                                    newNode.put("acc", mySubstring(history.getAccChange()));
+                                    newNode.put("params", mySubstring(history.getParamsChange()));
+                                    newNode.put("flops", mySubstring(history.getFlopsChange()));
+                                    newNode.put("size", 1616);
+                                    taskArray.add(newNode);
+                                    found = true;
+                                    break;
+                                }
+                            }
+                            if (found) {
+                                break;
+                            }
+                        }
+                    }
+                    // 4. 将修改后的 JSON 结构重新写入文件
+                    writer.writeValue(jsonFile, rootNode);
+                }catch(Exception e){
+                    System.out.println("模型上传并校验成功，但是修改json文件失败！！");
+                    iHistoryService.setTaskIsFailed(history.getHistoryId());
+                }
+
+            }
             boolean uploaded = iHistoryService.SyncHistory(info.getTaskId(), info.getStatus(), info.getParamsChange(), info.getFlopsChange(), info.getAccChange(),
                     info.getLossChange(), info.getPrunedPath(), info.getStructureAfterPruned(), info.getLogPath(), info.getTotEpoch(), info.getCurrentEpoch());
             if(uploaded){
-                System.out.println("已同步训练信息！");
+                System.out.println("已同步任务信息！");
             }
         }
-
-
-
     }
 
 
@@ -153,59 +224,52 @@ public class DistributorTimedTask {
                 System.out.println("将此任务发送到客户端：" + info.getClient());
                 if(client.equals("vipa155_client1")){
                     rabbitTemplate.convertAndSend(exchangeName, "vipa155_1", info);
-//                    try {
-//                        socket4client155_1 = new Socket("10.214.242.155", 50026);
-//                        socket4client155_1.setSoTimeout(2000);
-//                        System.out.println("向客户端155_1发送任务: " + info);
-//                        ObjectOutputStream objectOutputStream = new ObjectOutputStream(socket4client155_1.getOutputStream());
-//                        objectOutputStream.writeObject(info);  // 将info的信息传给客户端
-//                        objectOutputStream.flush();
-//                        System.out.println("发送完成");
-//                    } catch (SocketTimeoutException e) {
-//                        System.out.println("在指定时间内没有连接到客户端155_1");
-//                    } catch (NullPointerException | ConnectException e){
-//                        System.out.println("没有连到客户端155_1，请查看客户端155_1是否启动");
-//                    } catch (SocketException e) {
-//                        e.printStackTrace();
-//                    } catch (UnknownHostException e) {
-//                        e.printStackTrace();
-//                    } catch (IOException e) {
-//                        e.printStackTrace();
-//                    }
-//                    iHistoryService1551.uploadHistory(info.getUsername(), info.getStatus(), info.getParamsChange(), info.getFlopsChange(), info.getAccChange(),
-//                            info.getLossChange(), info.getPrunedPath(), info.getStructureAfterPruned(), info.getLogPath(), info.getTotEpoch(), info.getCurrentEpoch(),
-//                            info.getScript());
                 }else if(client.equals("vipa155_client2")){
                     rabbitTemplate.convertAndSend(exchangeName, "vipa155_2", info);
-
-//                    try {
-//                        socket4client155_2 = new Socket("10.214.242.155", 50036);
-//                        socket4client155_2.setSoTimeout(2000);
-//                        System.out.println("向客户端155_2发送任务: " + info);
-//                        ObjectOutputStream objectOutputStream = new ObjectOutputStream(socket4client155_2.getOutputStream());
-//                        objectOutputStream.writeObject(info);  // 将info的信息传给客户端
-//                        objectOutputStream.flush();
-//                        System.out.println("发送完成");
-//                    } catch (SocketTimeoutException e) {
-//                        System.out.println("在指定时间内没有连接到客户端155_2");
-//                    } catch (NullPointerException | ConnectException e){
-//                        System.out.println("没有连到客户端155_2，请查看客户端155_2是否启动");
-//                    } catch (SocketException e) {
-//                        e.printStackTrace();
-//                    } catch (UnknownHostException e) {
-//                        e.printStackTrace();
-//                    } catch (IOException e) {
-//                        e.printStackTrace();
-//                    }
-//                    iHistoryService1552.uploadHistory(info.getUsername(), info.getStatus(), info.getParamsChange(), info.getFlopsChange(), info.getAccChange(),
-//                            info.getLossChange(), info.getPrunedPath(), info.getStructureAfterPruned(), info.getLogPath(), info.getTotEpoch(), info.getCurrentEpoch(),
-//                            info.getScript());
+                }else if(client.equals("NULL")) {  //只剪枝或上传原始模型的任务，服务器自己完成
+                    String taskType = info.getTaskType();
+                    String script = info.getScript();
+                    if(taskType.equals("Directly Pruned")){ //直接剪枝的任务
+                        System.out.println("查询到直接剪枝的任务：" + script);
+                    }else if(taskType.equals("Upload Raw Model")){
+                        System.out.println("查询到上传模型的任务：" + script);
+                        script += " --isUpload";
+                    }
+                    script += " --task-id " + info.getHistoryId();
+                    iHistoryService.setTaskIsTraining(info.getHistoryId());
+                    System.out.println("已修改任务状态为在训练");
+                    LaunchTask(script, info.getHistoryId());  //启动任务
+                    iHistoryService.setTaskIsReady(info.getHistoryId());
+                    System.out.println("已修改任务状态为Ready");
                 }
-//                System.out.println("发送完毕，需要修改任务状态......");
-//                iHistoryService.updateHistory(info.getHistoryId());
-//                System.out.println("该任务状态已修改为已分发");
             }
         }
+    }
+
+    public void LaunchTask(String script, int taskId){
+        //创建一个线程并执行脚本script
+        Thread taskThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                // 在这里执行Python脚本
+                try {
+                    Process process = Runtime.getRuntime().exec(script);
+                    int exitCode = process.waitFor(); // 等待进程执行完成
+                    if (exitCode == 0) {
+                        System.out.println("剪枝任务执行成功！");
+                    } else {
+                        System.out.println("剪枝任务执行失败，退出码：" + exitCode);
+                        System.out.println("修改数据库，设置任务失败");
+                        iHistoryService.setTaskIsFailed(taskId);
+                        System.out.println("已修改任务状态为Failed");
+                    }
+                } catch (IOException | InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        taskThread.start(); // 启动线程
     }
 
     private boolean isJson(byte[] body, Class<?> targetType) {

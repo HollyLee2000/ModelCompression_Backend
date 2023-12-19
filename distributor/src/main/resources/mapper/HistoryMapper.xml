@@ -5,6 +5,12 @@
         select * from history
         where is_training=1
     </select>
+    <select id="findHistoryById" resultType="History">
+        select * from history
+        where history_id=#{historyId}
+    </select>
+
+
     <update id="updateHistory">
         update history
         set is_training=2

@@ -62,6 +62,19 @@ public class HistoryServiceImpl extends ServiceImpl<HistoryMapper, History> impl
     }
 
     @Override
+    public boolean uploadUploadingHistory(String modelname, String tasktype, String checkpointpath, String username, String submittime,
+                                         String status, String paramschange, String flopschange, String accchange, String losschange, String prunedpath,
+                                         String structurebeforepruned, String structureafterpruned, String logpath, int istrain, int totepoch,
+                                         int currentepoch, String script, String client, String dataset, String usrModelName) {
+        historyMapper.uploadUploadingHistory(modelname, tasktype, checkpointpath, username, submittime, status, paramschange,
+                flopschange, accchange, losschange, prunedpath, structurebeforepruned, structureafterpruned, logpath, istrain, totepoch,
+                currentepoch, script, client, dataset, usrModelName);
+        return true;
+    }
+
+
+
+    @Override
     public PageInfo<History> findHistoriesByUser(Integer pageNum, Integer pageSize, FindHistoriesByUserReq req){
         PageHelper.startPage(pageNum,pageSize);
         List<History> histories =  historyMapper.findHistoriesByUser(req);

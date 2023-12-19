@@ -21,3 +21,10 @@ logging:
   level:
     org.zjuvipa.mapper: debug
 
+modelcompression:
+  minio:
+    endpointUrl: http://10.214.242.155:9000
+    accessKey: minioadmin
+    secreKey: minioadmin
+    bucketName: modelcompression-bucket
+

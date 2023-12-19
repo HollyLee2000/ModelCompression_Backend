@@ -26,6 +26,8 @@ public interface IDistributorHistoryService extends IService<History> {
 
     public void setTaskIsFailed(int historyId);
 
+    public History findHistoryById(int historyId);
+
     public void updateClient(int historyId, String client);
 
     public boolean SyncHistory(int taskid, String status, String paramschange, String flopschange, String accchange, String losschange,

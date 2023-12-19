@@ -31,6 +31,19 @@ public class HistoryInfo implements Serializable {
     private String script;
     private String client;
 
+    //为了上传模型的任务
+    private String dataset;
+    private String usrModelName;
+
+    //为了显示方法, importance没有再用上了
+    private String importance;
+    private String pruner;
+    private String importanceLink;
+    private String prunerLink;
+
+//    //附加参数
+//    private Integer isDG;
+//    private Integer isSparsified;
 
     public HistoryInfo(){}
 

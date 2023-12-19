@@ -1,10 +1,10 @@
-package com.atguigu.spzx.manager.properties;
+package org.zjuvipa.compression.backend.properties;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @Data
-@ConfigurationProperties(prefix = "spzx.minio")
+@ConfigurationProperties(prefix = "modelcompression.minio")
 public class MinioProperties {
 
     private String endpointUrl;

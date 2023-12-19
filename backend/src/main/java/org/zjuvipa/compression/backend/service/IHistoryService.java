@@ -34,6 +34,13 @@ public interface IHistoryService extends IService<History> {
                                  String structurebeforepruned, String structureafterpruned, String logpath, int istrain, int totepoch, int currentepoch,
                                  String script, String client);
 
+    public boolean uploadUploadingHistory(String modelname, String tasktype, String checkpointpath, String username, String submittime, String status,
+                                         String paramschange, String flopschange, String accchange, String losschange, String prunedpath,
+                                         String structurebeforepruned, String structureafterpruned, String logpath, int istrain, int totepoch, int currentepoch,
+                                         String script, String client, String dataset, String usrModelName);
+
+
+
 
 
     public List<HistoryInfo> findHistoriesByUserAndAlgo(String username, int algoId);

@@ -86,8 +86,22 @@ public class UserController {
     @Autowired
     IHistoryService iHistoryService;
 
-    private Map<String, Integer> resolvedNum = new HashMap<String, Integer>();
-    private Map<String, Integer> totalNum = new HashMap<String, Integer>();
+    private final Map<String, Integer> resolvedNum = new HashMap<String, Integer>();
+    private final Map<String, Integer> totalNum = new HashMap<String, Integer>();
+    private final Map<String, String> algo_name = new HashMap<String, String>();
+    private final Map<String, String> algo_link = new HashMap<String, String>();
+    private final List<String> sparseList = new ArrayList<>();
+
+//    MagnitudeImportance能够剪的层:
+//        线性/卷积输入输出层、BatchNorm层
+
+    {
+        algo_name.put("group_norm", "GroupNorm");  //错了
+        algo_link.put("group_norm", "https://arxiv.org/pdf/1608.08710.pdf");
+        sparseList.add("group_sl");
+    }
+
+
     private boolean pruner_flag = false; //是否获得剪枝器，获得的时候开始展示进度条
     private boolean process_error = false;
 
@@ -533,6 +547,16 @@ public class UserController {
     @ApiOperation("修改json树")
     @PostMapping("/updateJsonTree")
     public ResultBean<UploadPicturesRes> updateJsonTree(@RequestBody SubmitAlgorithmReq req) throws IOException, InterruptedException {
+
+
+
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        Date date = new Date();
+        String day = df.format(date);  //放弃转换成String, 直接比较date
+
+
+
+
         process_error = false;
         String username = req.getUsername();
         String model = req.getName();
@@ -543,27 +567,43 @@ public class UserController {
         UploadPicturesRes res = new UploadPicturesRes();
 
         String Script = req.getPythonPath();
-        System.out.println("Script: "+ Script);
-        System.out.println("dataset: "+ dataset);
-        System.out.println("model: "+ model);
+//        System.out.println("Script: "+ Script);
+//        System.out.println("dataset: "+ dataset);
+//        System.out.println("model: "+ model);
 
         //检测文件系统中是否存在ckpt这个文件
         File ckptFile = new File(ckpt);
 
         if(ckptFile.exists()){
-            int size1 = 0;
-            if(dataset.equals("CIFAR10")||dataset.equals("CIFAR100")){
-                size1 = 79;
-            }else if(dataset.equals("ImageNet")){
-                size1 = 391;
-            }else if(dataset.equals("COCO")){
-                size1 = 79;
-            }else{
-                System.out.println("dataset: "+ dataset);
-            }
+            res.setSucceed(iHistoryService.uploadUploadingHistory(model+"-"+dataset, "Upload Raw Model", ckpt, username,
+                    day, "Waiting", "Params: N/A", "FLOPs: N/A", "Acc: N/A", "Val Loss: N/A", "N/A",
+                    req.getEmail(), "N/A", "N/A", 1, 233, 0, req.getPythonPath(), "NULL", dataset, usrModelName));
+            res.setSucceed(true);
+            result.setData(res);
+            result.setMsg("上传成功");
+            return result;
+        }else{
+            res.setSucceed(false);
+            result.setData(res);
+            result.setMsg("上传失败");
+            return result;
+        }
 
 
-            Process process = Runtime.getRuntime().exec(Script);
+
+//            int size1 = 0;
+//            if(dataset.equals("CIFAR10")||dataset.equals("CIFAR100")){
+//                size1 = 79;
+//            }else if(dataset.equals("ImageNet")){
+//                size1 = 391;
+//            }else if(dataset.equals("COCO")){
+//                size1 = 79;
+//            }else{
+//                System.out.println("dataset: "+ dataset);
+//            }
+//
+//
+//            Process process = Runtime.getRuntime().exec(Script);
 
 
 //            int batchSize = 128;
@@ -571,129 +611,129 @@ public class UserController {
 //            intToIntMap.put(128, 79);
 //            intToIntMap.put(64, 157);
 //            intToIntMap.put(32, 313);
-            int Num = 0;
+//            int Num = 0;
 //            int size1 = intToIntMap.get(batchSize);
 
 
-            resolvedNum.put("current", 0);
-            ServerSocket ss = new ServerSocket(50006);
-            ss.setSoTimeout(1000);
-            // 获取进程的错误输出流
-            BufferedReader errorReader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+//            resolvedNum.put("current", 0);
+//            ServerSocket ss = new ServerSocket(50006);
+//            ss.setSoTimeout(1000);
+//            // 获取进程的错误输出流
+//            BufferedReader errorReader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
+//
+//            while(Num < size1) {
+//                System.out.println("启动服务器....");
+//                try {
+//                    Socket s = ss.accept();
+//                    // 如果在超时时间内有客户端连接，将会执行这里的代码
+//                    System.out.println("客户端:" + s.getInetAddress().getLocalHost() + "已连接到服务器");
+//                    BufferedReader br = new BufferedReader(new InputStreamReader(s.getInputStream()));
+//                    String mess = br.readLine();
+//                    if(StringUtils.hasText(mess)){
+//                        if(mess.equals("Pruner got")){
+//                            System.out.println("mess: " + mess);
+//                            System.out.println("获得了剪枝器，准备开始展示进度条");
+//                            pruner_flag = true;
+//                        }else{
+//                            System.out.println("mess: " + mess);
+//                            Num += 1;
+//                        }
+//                    }
+//                    System.out.println("已处理batch:" +Num);
+//                    resolvedNum.put("current", Num);
+//                } catch (SocketTimeoutException e) {
+//                    // 如果超时时间内没有客户端连接，将会执行这里的代码
+//                    System.out.println("在指定的超时时间内没有客户端连接到服务器");
+//
+//                    if(!errorReader.ready()){
+//                        System.out.println("还没出现错误");
+//                    }else{
+//                        //补充错误输出流的信息
+//                        if(!dataset.equals("COCO")){
+//                            System.out.println("程序出错了,退出！");
+//                            break;
+//                        }
+//
+//                    }
+//                }
+//            }
+//            ss.close();
+//
+//            System.out.println("任务结束，服务器关闭");
 
-            while(Num < size1) {
-                System.out.println("启动服务器....");
-                try {
-                    Socket s = ss.accept();
-                    // 如果在超时时间内有客户端连接，将会执行这里的代码
-                    System.out.println("客户端:" + s.getInetAddress().getLocalHost() + "已连接到服务器");
-                    BufferedReader br = new BufferedReader(new InputStreamReader(s.getInputStream()));
-                    String mess = br.readLine();
-                    if(StringUtils.hasText(mess)){
-                        if(mess.equals("Pruner got")){
-                            System.out.println("mess: " + mess);
-                            System.out.println("获得了剪枝器，准备开始展示进度条");
-                            pruner_flag = true;
-                        }else{
-                            System.out.println("mess: " + mess);
-                            Num += 1;
-                        }
-                    }
-                    System.out.println("已处理batch:" +Num);
-                    resolvedNum.put("current", Num);
-                } catch (SocketTimeoutException e) {
-                    // 如果超时时间内没有客户端连接，将会执行这里的代码
-                    System.out.println("在指定的超时时间内没有客户端连接到服务器");
-
-                    if(!errorReader.ready()){
-                        System.out.println("还没出现错误");
-                    }else{
-                        //补充错误输出流的信息
-                        if(!dataset.equals("COCO")){
-                            System.out.println("程序出错了,退出！");
-                            break;
-                        }
-
-                    }
-                }
-            }
-            ss.close();
-
-            System.out.println("任务结束，服务器关闭");
 
 
-
-            BufferedReader in = new BufferedReader(new InputStreamReader(process.getInputStream()));
-            List<String> lines = new ArrayList<String>();
-            String line;
-            while ((line = in.readLine()) != null) {
-                lines.add(line);
-            }
-            process.waitFor();
-
-            System.out.println("lines: "+lines);
+//            BufferedReader in = new BufferedReader(new InputStreamReader(process.getInputStream()));
+//            List<String> lines = new ArrayList<String>();
+//            String line;
+//            while ((line = in.readLine()) != null) {
+//                lines.add(line);
+//            }
+//            process.waitFor();
+//
+//            System.out.println("lines: "+lines);
 
             //获取lines最后一行的内容，检测是否是"finished"
-            if(lines.get(lines.size() - 1).equals("finished")){
-                ObjectMapper mapper = new ObjectMapper();
-                mapper.enable(SerializationFeature.INDENT_OUTPUT); // 启用缩进输出
-                ObjectWriter writer = mapper.writerWithDefaultPrettyPrinter(); // 使用默认的缩进格式
-                File jsonFile = new File("/nfs/lhl/ModelCompression/modelzoo.json");
-                ObjectNode rootNode = (ObjectNode) mapper.readTree(jsonFile);
-                // 2. 在 JSON 结构中查找满足条件的节点
-                boolean found = false;
-                ArrayNode childrenArray = rootNode.withArray("children");
-                for (int i = 0; i < childrenArray.size(); i++) {
-                    ObjectNode datasetNode = (ObjectNode) childrenArray.get(i);
-                    if (datasetNode.get("name").asText().equals(dataset)) {
-                        ArrayNode modelsArray = datasetNode.withArray("children");
-                        for (int j = 0; j < modelsArray.size(); j++) {
-                            ObjectNode modelNode = (ObjectNode) modelsArray.get(j);
-                            if (modelNode.get("name").asText().equals(model)) {
-                                // 3. 添加一个新节点
-                                ObjectNode taskNode = (ObjectNode) modelsArray.get(j);
-                                ArrayNode taskArray = taskNode.withArray("children");
-                                System.out.println("taskArray: "+ taskArray);
-                                ObjectNode newNode = mapper.createObjectNode();
-                                newNode.put("name", username + ":" + usrModelName);
-                                newNode.put("type", "usr");
-                                newNode.put("model_name", dataset + "_" + model + "_" + username + ":" + usrModelName);
-                                newNode.put("status", "done");
-                                newNode.put("path", ckpt);
-                                newNode.put("acc", lines.get(lines.size() - 4));
-                                newNode.put("params", lines.get(lines.size() - 3));
-                                newNode.put("flops", lines.get(lines.size() - 2));
-                                newNode.put("size", 1616);
-                                taskArray.add(newNode);
-                                found = true;
-                                break;
-                            }
-                        }
-                        if (found) {
-                            break;
-                        }
-                    }
-                }
-                res.setSucceed(found);
-                // 4. 将修改后的 JSON 结构重新写入文件
-                writer.writeValue(jsonFile, rootNode);
-//        // 4. 将修改后的 JSON 结构重新写入文件
-//        mapper.writeValue(jsonFile, rootNode);
-                result.setData(res);
-                result.setMsg("上传成功");
-                return result;
-            }else{
-                res.setSucceed(false);
-                result.setData(res);
-                result.setMsg("上传失败");
-                return result;
-            }
-        }else{
-            res.setSucceed(false);
-            result.setData(res);
-            result.setMsg("上传失败");
-            return result;
-        }
+//            if(lines.get(lines.size() - 1).equals("finished")){
+//                ObjectMapper mapper = new ObjectMapper();
+//                mapper.enable(SerializationFeature.INDENT_OUTPUT); // 启用缩进输出
+//                ObjectWriter writer = mapper.writerWithDefaultPrettyPrinter(); // 使用默认的缩进格式
+//                File jsonFile = new File("/nfs/lhl/ModelCompression/modelzoo.json");
+//                ObjectNode rootNode = (ObjectNode) mapper.readTree(jsonFile);
+//                // 2. 在 JSON 结构中查找满足条件的节点
+//                boolean found = false;
+//                ArrayNode childrenArray = rootNode.withArray("children");
+//                for (int i = 0; i < childrenArray.size(); i++) {
+//                    ObjectNode datasetNode = (ObjectNode) childrenArray.get(i);
+//                    if (datasetNode.get("name").asText().equals(dataset)) {
+//                        ArrayNode modelsArray = datasetNode.withArray("children");
+//                        for (int j = 0; j < modelsArray.size(); j++) {
+//                            ObjectNode modelNode = (ObjectNode) modelsArray.get(j);
+//                            if (modelNode.get("name").asText().equals(model)) {
+//                                // 3. 添加一个新节点
+//                                ObjectNode taskNode = (ObjectNode) modelsArray.get(j);
+//                                ArrayNode taskArray = taskNode.withArray("children");
+//                                System.out.println("taskArray: "+ taskArray);
+//                                ObjectNode newNode = mapper.createObjectNode();
+//                                newNode.put("name", username + ":" + usrModelName);
+//                                newNode.put("type", "usr");
+//                                newNode.put("model_name", dataset + "_" + model + "_" + username + ":" + usrModelName);
+//                                newNode.put("status", "done");
+//                                newNode.put("path", ckpt);
+//                                newNode.put("acc", lines.get(lines.size() - 4));
+//                                newNode.put("params", lines.get(lines.size() - 3));
+//                                newNode.put("flops", lines.get(lines.size() - 2));
+//                                newNode.put("size", 1616);
+//                                taskArray.add(newNode);
+//                                found = true;
+//                                break;
+//                            }
+//                        }
+//                        if (found) {
+//                            break;
+//                        }
+//                    }
+//                }
+//                res.setSucceed(found);
+//                // 4. 将修改后的 JSON 结构重新写入文件
+//                writer.writeValue(jsonFile, rootNode);
+////        // 4. 将修改后的 JSON 结构重新写入文件
+////        mapper.writeValue(jsonFile, rootNode);
+//                result.setData(res);
+//                result.setMsg("上传成功");
+//                return result;
+//            }else{
+//                res.setSucceed(false);
+//                result.setData(res);
+//                result.setMsg("上传失败");
+//                return result;
+//            }
+//        }else{
+//            res.setSucceed(false);
+//            result.setData(res);
+//            result.setMsg("上传失败");
+//            return result;
+//        }
 
 
 
