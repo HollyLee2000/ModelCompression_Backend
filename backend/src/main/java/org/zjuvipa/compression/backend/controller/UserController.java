@@ -86,19 +86,72 @@ public class UserController {
     @Autowired
     IHistoryService iHistoryService;
 
+    //SubmitTrainingHistory
     private final Map<String, Integer> resolvedNum = new HashMap<String, Integer>();
     private final Map<String, Integer> totalNum = new HashMap<String, Integer>();
     private final Map<String, String> algo_name = new HashMap<String, String>();
     private final Map<String, String> algo_link = new HashMap<String, String>();
-    private final List<String> sparseList = new ArrayList<>();
+    private final Map<String, String> sparse_name = new HashMap<String, String>();
+    private final Map<String, String> sparse_link = new HashMap<String, String>();
 
 //    MagnitudeImportance能够剪的层:
 //        线性/卷积输入输出层、BatchNorm层
 
     {
-        algo_name.put("group_norm", "GroupNorm");  //错了
-        algo_link.put("group_norm", "https://arxiv.org/pdf/1608.08710.pdf");
-        sparseList.add("group_sl");
+        algo_name.put("random", "Random");
+        algo_link.put("random", "https://arxiv.org/pdf/1801.10447.pdf");
+        sparse_name.put("random", "N/A");
+        sparse_link.put("random", "N/A");
+
+        algo_name.put("l1", "MagnitudeL1");
+        algo_link.put("l1", "https://arxiv.org/pdf/1608.08710.pdf");
+        sparse_name.put("l1", "N/A");
+        sparse_link.put("l1", "N/A");
+
+        algo_name.put("l2", "MagnitudeL2");
+        algo_link.put("l2", "https://arxiv.org/pdf/1608.08710.pdf");
+        sparse_name.put("l2", "N/A");
+        sparse_link.put("l2", "N/A");
+
+        algo_name.put("lamp", "LAMP");
+        algo_link.put("lamp", "https://arxiv.org/pdf/2010.07611.pdf");
+        sparse_name.put("lamp", "N/A");
+        sparse_link.put("lamp", "N/A");
+
+        algo_name.put("slim", "BNScale");
+        algo_link.put("slim", "https://arxiv.org/pdf/1708.06519.pdf");
+        sparse_name.put("slim", "BNScale");
+        sparse_link.put("slim", "https://arxiv.org/pdf/1708.06519.pdf");
+
+        algo_name.put("group_slim", "BNScale");
+        algo_link.put("group_slim", "https://arxiv.org/pdf/1708.06519.pdf");
+        sparse_name.put("group_slim", "GroupLASSO");
+        sparse_link.put("group_slim", "https://tibshirani.su.domains/ftp/sparse-grlasso.pdf");
+
+        algo_name.put("group_sl", "MagnitudeL2");
+        algo_link.put("group_sl", "https://arxiv.org/pdf/1608.08710.pdf");
+        sparse_name.put("group_sl", "GroupNorm");
+        sparse_link.put("group_sl", "https://openaccess.thecvf.com/content/CVPR2023/papers/Fang_DepGraph_Towards_Any_Structural_Pruning_CVPR_2023_paper.pdf");
+
+        algo_name.put("growing_reg", "MagnitudeL2");
+        algo_link.put("growing_reg", "https://arxiv.org/pdf/1608.08710.pdf");
+        sparse_name.put("growing_reg", "GrowingReg");
+        sparse_link.put("growing_reg", "https://arxiv.org/abs/2012.09243");
+
+        algo_name.put("taylor", "TaylorFO");
+        algo_link.put("taylor", "https://openaccess.thecvf.com/content_CVPR_2019/papers/Molchanov_Importance_Estimation_for_Neural_Network_Pruning_CVPR_2019_paper.pdf");
+        sparse_name.put("taylor", "N/A");
+        sparse_link.put("taylor", "N/A");
+
+        algo_name.put("hessian", "Hessian");
+        algo_link.put("hessian", "https://proceedings.neurips.cc/paper/1989/hash/6c9882bbac1c7093bd25041881277658-Abstract.html");
+        sparse_name.put("hessian", "N/A");
+        sparse_link.put("hessian", "N/A");
+
+        algo_name.put("l2_lasso", "MagnitudeL2");
+        algo_link.put("l2_lasso", "https://arxiv.org/pdf/1608.08710.pdf");
+        sparse_name.put("l2_lasso", "GroupLASSO");
+        sparse_link.put("l2_lasso", "https://tibshirani.su.domains/ftp/sparse-grlasso.pdf");
     }
 
 
@@ -428,9 +481,11 @@ public class UserController {
         String[] parts = req.getUsername().split(" "); // 使用空格分隔字符串
         String username;
         String tot_epoch;
-        if (parts.length == 2) {
+        String criterion;
+        if (parts.length == 3) {
             username  = parts[0];
             tot_epoch = parts[1];
+            criterion = parts[2];
         } else {
             throw new RuntimeException("Invalid parameter: " + req.getUsername());
         }
@@ -446,7 +501,8 @@ public class UserController {
 
         res.setSucceed(iHistoryService.uploadTrainingHistory(req.getModelname(), req.getTasktype(), req.getCheckpointpath(), username,
                 day, req.getStatus(),req.getParamschange(),req.getFlopschange(),req.getAccchange(),req.getLosschange(), req.getPrunedpath(),
-                req.getStructurebeforepruned(), req.getStructureafterpruned(), req.getLogpath(), 1, Integer.parseInt(tot_epoch), 0, req.getScript(), req.getClient()));
+                req.getStructurebeforepruned(), req.getStructureafterpruned(), req.getLogpath(), 1, Integer.parseInt(tot_epoch), 0, req.getScript(), req.getClient(),
+                algo_name.get(criterion), algo_link.get(criterion), sparse_name.get(criterion), sparse_link.get(criterion)));
         //1表示需要训练，2表示已经分发给了客户端
         //3是total epoch, 后期要根据具体数据集更改
 

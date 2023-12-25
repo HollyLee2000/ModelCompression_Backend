@@ -64,6 +64,10 @@ public class leaderboardList implements Serializable {
 
     private String regularizerLink;
 
+    private Double pruneTime;
+
+    private Double sparseTime;
+
     public leaderboardList(){}
 
     public leaderboardList(leaderboardInfo leaderboardinfo){

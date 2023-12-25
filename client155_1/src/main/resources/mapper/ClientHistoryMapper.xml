@@ -13,7 +13,7 @@
 
     <select id="findExecutingTask" resultType="ClientHistory">
         select * from task
-        where status='Ready' or status='Pruning'  or status='Finetuning';
+        where status='Ready' or status='Pruning'  or status='Finetuning' or status='Sparse learning';
     </select>
 
     <select id="findHistoryById" resultType="ClientHistory">

@@ -47,6 +47,10 @@ public class leaderboardInfo {
 
     private String regularizerLink;
 
+    private Double pruneTime;
+
+    private Double sparseTime;
+
     public leaderboardInfo(){}
 
     public leaderboardInfo(leaderboardList leaderboardlist){

@@ -54,10 +54,10 @@ public class HistoryServiceImpl extends ServiceImpl<HistoryMapper, History> impl
     public boolean uploadTrainingHistory(String modelname, String tasktype, String checkpointpath, String username, String submittime,
                                          String status, String paramschange, String flopschange, String accchange, String losschange, String prunedpath,
                                          String structurebeforepruned, String structureafterpruned, String logpath, int istrain, int totepoch,
-                                         int currentepoch, String script, String client) {
+                                         int currentepoch, String script, String client, String algoname, String algolink, String sparsename, String sparselink) {
         historyMapper.uploadTrainingHistory(modelname, tasktype, checkpointpath, username, submittime, status, paramschange,
                 flopschange, accchange, losschange, prunedpath, structurebeforepruned, structureafterpruned, logpath, istrain, totepoch,
-                currentepoch, script, client);
+                currentepoch, script, client, algoname, algolink, sparsename, sparselink);
         return true;
     }
 

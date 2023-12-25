@@ -32,7 +32,7 @@ public interface IHistoryService extends IService<History> {
     public boolean uploadTrainingHistory(String modelname, String tasktype, String checkpointpath, String username, String submittime, String status,
                                  String paramschange, String flopschange, String accchange, String losschange, String prunedpath,
                                  String structurebeforepruned, String structureafterpruned, String logpath, int istrain, int totepoch, int currentepoch,
-                                 String script, String client);
+                                 String script, String client, String algoname, String algolink, String sparsename, String sparselink);
 
     public boolean uploadUploadingHistory(String modelname, String tasktype, String checkpointpath, String username, String submittime, String status,
                                          String paramschange, String flopschange, String accchange, String losschange, String prunedpath,

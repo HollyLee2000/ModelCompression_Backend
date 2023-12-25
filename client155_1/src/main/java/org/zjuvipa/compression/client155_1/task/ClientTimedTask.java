@@ -219,6 +219,9 @@ public class ClientTimedTask {
             }else if (myObject instanceof ScriptMessage) {
                 ScriptMessage info = (ScriptMessage) myObject;
                 switch (info.getAction()) {
+                    case "sparse_learning":
+                        System.out.println("进程已结束等待，开始进行稀疏学习：【" + info + "】" + LocalTime.now());
+                        break;
                     case "pruning":
                         System.out.println("进程已结束等待，启动剪枝程序：【" + info + "】" + LocalTime.now());
                         break;
@@ -227,6 +230,9 @@ public class ClientTimedTask {
                         break;
                     case "epoch++":
                         System.out.println("进程完成了一个epoch并发来消息：【" + info + "】" + LocalTime.now());
+                        break;
+                    case "sparsify epoch++":
+                        System.out.println("进程完成了一个稀疏训练的epoch并发来消息：【" + info + "】" + LocalTime.now());
                         break;
                     case "finetuned":
                         System.out.println("进程完成了finetune并发来消息：【" + info + "】" + LocalTime.now());
