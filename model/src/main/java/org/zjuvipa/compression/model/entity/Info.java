@@ -1,11 +1,11 @@
-package org.zjuvipa.entity;
+package org.zjuvipa.compression.model.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.zjuvipa.info.HistoryInfo;
-import org.zjuvipa.util.MyBeanUtils;
+import org.zjuvipa.compression.model.info.InfoInfo;
+import org.zjuvipa.compression.common.util.MyBeanUtils;
 
 import java.io.Serializable;
 
@@ -19,7 +19,7 @@ import java.io.Serializable;
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-public class History implements Serializable {
+public class Info implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -39,14 +39,14 @@ public class History implements Serializable {
     private String dateTime;
     private String status;
 
-    public History(){}
+    public Info(){}
 
-    public History(HistoryInfo historyInfo){
+    public Info(InfoInfo historyInfo){
         MyBeanUtils.copyProperties(historyInfo, this);
     }
 
-    public HistoryInfo change(){
-        HistoryInfo historyInfo = new HistoryInfo();
+    public InfoInfo change(){
+        InfoInfo historyInfo = new InfoInfo();
         MyBeanUtils.copyProperties(this, historyInfo);
         return historyInfo;
     }

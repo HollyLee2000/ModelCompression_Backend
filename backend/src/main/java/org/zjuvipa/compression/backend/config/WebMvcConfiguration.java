@@ -1,12 +1,12 @@
-package com.atguigu.spzx.manager.config;
+package org.zjuvipa.compression.backend.config;
 
-import com.atguigu.spzx.manager.interceptor.LoginAuthInterceptor;
-import com.atguigu.spzx.manager.properties.UserProperties;
+import org.zjuvipa.compression.backend.interceptor.LoginAuthInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.zjuvipa.compression.backend.properties.UserProperties;
 
 @Component
 public class WebMvcConfiguration implements WebMvcConfigurer {

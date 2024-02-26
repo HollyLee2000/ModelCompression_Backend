@@ -1,13 +1,11 @@
-package org.zjuvipa.compression.model.entity;
-
-import java.io.Serializable;
+package org.zjuvipa.compression.common.util;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.zjuvipa.compression.model.info.UserInfo;
-import org.zjuvipa.compression.common.util.MyBeanUtils;
+
+import java.io.Serializable;
 
 /**
  * <p>

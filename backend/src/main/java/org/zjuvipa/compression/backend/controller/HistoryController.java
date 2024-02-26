@@ -18,6 +18,7 @@ import org.zjuvipa.compression.model.info.*;
 import org.zjuvipa.compression.model.req.FindHistoriesByUserReq;
 //import org.zjuvipa.compression.model.res.AddHistoryRes;
 import org.zjuvipa.compression.model.res.FindHistoryRes;
+import org.zjuvipa.compression.model.res.FindInfoRes;
 import org.zjuvipa.compression.model.res.PagedFindHistoryRes;
 
 
@@ -129,36 +130,77 @@ public class HistoryController {
 //    }
 
     @CrossOrigin
+    @ApiOperation("展示某一用户申请加入排行榜的历史记录")
+    @PostMapping("findHistoryByUserNew")
+    public ResultBean<FindInfoRes> findHistoryByUserNew(@RequestBody FindHistoriesByUserReq req) {
+        HttpSession httpSession = request.getSession();
+        ResultBean<FindInfoRes> result = new ResultBean<>();
+//        UserInfo userInfo = (UserInfo)httpSession.getAttribute(ticket);
+//        if(userInfo == null || !StringUtils.hasText(ticket)) {
+//            System.out.println("用户未登录，请跳转login页面");
+//            result.setMsg("用户未登录，请跳转login页面");
+//            result.setCode(ResultBean.NO_PERMISSION);
+//            result.setData(null);
+//            return result;
+//        }else{
+//            System.out.println("用户已登录，可以进行查询");
+//        }
+        FindInfoRes histories = new FindInfoRes();
+        histories.setInfoInfos(iHistoryService.findHistoriesByUserNew(req.getUsername()));  //new
+        if(histories.getInfoInfos() != null) {
+            result.setMsg("查询成功！共"+histories.getInfoInfos().size()+"条记录");
+            result.setData(histories);
+        }
+        else {
+            result.setMsg("查询失败！共0条记录");
+            result.setCode(ResultBean.FAIL);
+            result.setData(null);
+        }
+        return result;
+    }
+
+    @CrossOrigin
     @ApiOperation("展示某一用户的所有历史记录")
     @PostMapping("findHistoryByUser/{pageNum}/{pageSize}")
     public ResultBean<PagedFindHistoryRes> findHistoryByUser(@PathVariable("pageNum") Integer pageNum,
                                                              @PathVariable("pageSize") Integer pageSize,
                                                              @RequestBody FindHistoriesByUserReq req,
-                                                             @CookieValue("userTicket")String ticket) {
+                                                             @RequestHeader(name = "access") String access) {
         HttpSession httpSession = request.getSession();
         ResultBean<PagedFindHistoryRes> result = new ResultBean<>();
-        UserInfo userInfo = (UserInfo)httpSession.getAttribute(ticket);
         PagedFindHistoryRes histories = new PagedFindHistoryRes();
-        if(userInfo == null || !StringUtils.hasText(ticket)) {
-            System.out.println("用户未登录，请跳转login页面");
-            result.setMsg("用户未登录，请跳转login页面");
-            result.setCode(ResultBean.NO_PERMISSION);
-            result.setData(null);
+
+//        UserInfo userInfo = (UserInfo)httpSession.getAttribute(ticket);
+//
+//        if(userInfo == null || !StringUtils.hasText(ticket)) {
+//            System.out.println("用户未登录，请跳转login页面");
+//            result.setMsg("用户未登录，请跳转login页面");
+//            result.setCode(ResultBean.NO_PERMISSION);
+//            result.setData(null);
+//        }
+        PageInfo<History> res;
+        if(access.equals("0")){
+            System.out.println("管理员的查询");
+            res = iHistoryService.findHistories(pageNum,pageSize,req);
+        }else if(access.equals("1")){
+            System.out.println("普通用户的查询");
+            res = iHistoryService.findHistoriesByUser(pageNum,pageSize,req);
         }else{
-            System.out.println("用户已登录，可以进行查询!!");
-            PageInfo<History> res = iHistoryService.findHistoriesByUser(pageNum,pageSize,req);
+            System.out.println("出bug了");
+            res = null;
+        }
+
 //            System.out.println("结果："+res);
-            histories.setHistoryInfos(res);
-            if(histories.getHistoryInfos() != null) {
-                result.setMsg("查询成功！");
+        histories.setHistoryInfos(res);
+        if(histories.getHistoryInfos() != null) {
+            result.setMsg("查询成功！");
 //                result.setMsg("查询成功！共"+histories.getHistoryInfos().size()+"条记录");
-                result.setData(histories);
-            }
-            else {
-                result.setMsg("查询失败！共0条记录");
-                result.setCode(ResultBean.FAIL);
-                result.setData(null);
-            }
+            result.setData(histories);
+        }
+        else {
+            result.setMsg("查询失败！共0条记录");
+            result.setCode(ResultBean.FAIL);
+            result.setData(null);
         }
         return result;
     }
@@ -166,19 +208,21 @@ public class HistoryController {
     @CrossOrigin
     @ApiOperation("展示所有历史记录")
     @PostMapping("findAll")
-    public ResultBean<FindHistoryRes> findAll(@RequestBody FindHistoriesByUserReq req, @CookieValue("userTicket")String ticket) {
+    public ResultBean<FindInfoRes> findAll(@RequestBody FindHistoriesByUserReq req) {
         HttpSession httpSession = request.getSession();
-        ResultBean<FindHistoryRes> result = new ResultBean<>();
-        UserInfo userInfo = (UserInfo)httpSession.getAttribute(ticket);
-        if(userInfo == null || !StringUtils.hasText(ticket)) {
-            System.out.println("用户未登录，请跳转login页面");
-            result.setMsg("用户未登录，请跳转login页面");
-            result.setCode(ResultBean.NO_PERMISSION);
-            result.setData(null);
-            return result;
-        }else{
-            System.out.println("用户已登录，可以进行查询");
-        }
+        ResultBean<FindInfoRes> result = new ResultBean<>();
+//        UserInfo userInfo = (UserInfo)httpSession.getAttribute(ticket);
+//        if(userInfo == null || !StringUtils.hasText(ticket)) {
+//            System.out.println("用户未登录，请跳转login页面");
+//            result.setMsg("用户未登录，请跳转login页面");
+//            result.setCode(ResultBean.NO_PERMISSION);
+//            result.setData(null);
+//            return result;
+//        }else{
+//            System.out.println("用户已登录，可以进行查询");
+//        }
+
+
 //        if(userInfo.getAuthority() > 0 && !req.getUsername().equals(userInfo.getUsername())){//非管理员无权限查看别的用户的历史记录
 //            System.out.println("无权限查看该用户历史记录！");
 //            result.setMsg("无权限查看该用户历史记录！");
@@ -189,12 +233,13 @@ public class HistoryController {
 
 //        iAlgorithmService
 
-        FindHistoryRes histories = new FindHistoryRes();
+        FindInfoRes infos = new FindInfoRes();
 //        histories.setHistoryInfos(iHistoryService.findHistoriesByUser(req.getUsername()));
-        histories.setHistoryInfos(iHistoryService.findAllHistories(req.getUsername()));
-        if(histories.getHistoryInfos() != null) {
-            result.setMsg("查询成功！共"+histories.getHistoryInfos().size()+"条记录");
-            result.setData(histories);
+        infos.setInfoInfos(iHistoryService.findAllHistories(req.getUsername()));
+
+        if(infos.getInfoInfos() != null) {
+            result.setMsg("查询成功！共"+infos.getInfoInfos().size()+"条记录");
+            result.setData(infos);
         }
         else {
             result.setMsg("查询失败！共0条记录");

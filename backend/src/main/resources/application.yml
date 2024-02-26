@@ -11,6 +11,10 @@ spring:
     multipart:
       max-file-size: 1000MB
       max-request-size: 1000MB
+  # Redis的相关配置
+  redis:
+    host: localhost
+    port: 6380
 server:
   port: 7996
 mybatis-plus:
@@ -22,6 +26,11 @@ logging:
     org.zjuvipa.mapper: debug
 
 modelcompression:
+  auth:
+    noAuthUrls:
+      - /user/login
+      - /user/captcha
+      - /user/register
   minio:
     endpointUrl: http://10.214.242.155:9000
     accessKey: minioadmin

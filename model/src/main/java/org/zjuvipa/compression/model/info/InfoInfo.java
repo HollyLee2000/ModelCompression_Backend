@@ -1,11 +1,11 @@
-package org.zjuvipa.info;
+package org.zjuvipa.compression.model.info;
 
 import lombok.Data;
-import org.zjuvipa.entity.History;
-import org.zjuvipa.util.MyBeanUtils;
+import org.zjuvipa.compression.model.entity.Info;
+import org.zjuvipa.compression.common.util.MyBeanUtils;
 
 @Data
-public class HistoryInfo {
+public class InfoInfo {
 
     private Integer algorithmId;
     private String username;
@@ -21,14 +21,14 @@ public class HistoryInfo {
     private String dateTime;
     private String status;
 
-    public HistoryInfo(){}
+    public InfoInfo(){}
 
-    public HistoryInfo(History history){
+    public InfoInfo(Info history){
         MyBeanUtils.copyProperties(history, this);
     }
 
-    public History change(){
-        History history = new History();
+    public Info change(){
+        Info history = new Info();
         MyBeanUtils.copyProperties(this, history);
         return history;
     }

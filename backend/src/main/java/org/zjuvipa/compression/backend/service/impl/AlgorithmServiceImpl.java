@@ -41,9 +41,13 @@ public class AlgorithmServiceImpl extends ServiceImpl<AlgorithmMapper, Algorithm
 
     @Override
     public boolean uploadAlgorithm(String username, String name, Double score, String institute, Integer ranking, String morfPath,
-                                   String lerfPath, String pythonPath, String email, String info, String dateTime, String status) {
-        algorithmMapper.uploadAlgorithm(username, name, score, institute, ranking, morfPath, lerfPath, pythonPath, email, info, dateTime, status);
+                                   String lerfPath, String pythonPath, String email, String info, String status) {
+        algorithmMapper.uploadAlgorithm(username, name, score, institute, ranking, morfPath, lerfPath, pythonPath, email, info, status);
         return true;
+    }
+
+    public List<Algorithm> findAlgoById(Integer algorithmId){
+        return algorithmMapper.findAlgoById(algorithmId);
     }
 
     public boolean algorithmReject(Integer algorithmId){

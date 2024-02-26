@@ -1,12 +1,9 @@
-package com.atguigu.spzx.utils;
+package org.zjuvipa.compression.common.util;
 
-import com.atguigu.spzx.model.entity.system.SysUser;
-import com.atguigu.spzx.model.entity.user.UserInfo;
 
 public class AuthContextUtil {
 
     private static final ThreadLocal<UserInfo> userInfoThreadLocal = new ThreadLocal<>() ;
-
 
     // 定义存储数据的静态方法
     public static void setUserInfo(UserInfo userInfo) {
@@ -25,15 +22,15 @@ public class AuthContextUtil {
 
 
     //创建threadLocal对象
-    private static final ThreadLocal<SysUser> threadLocal = new ThreadLocal<>();
+    private static final ThreadLocal<User> threadLocal = new ThreadLocal<>();
 
     //添加数据
-    public static void set(SysUser sysUser) {
+    public static void set(User sysUser) {
         threadLocal.set(sysUser);
     }
 
     //获取数据
-    public static SysUser get() {
+    public static User get() {
         return threadLocal.get();
     }
 
@@ -41,4 +38,23 @@ public class AuthContextUtil {
     public static void remove() {
         threadLocal.remove();
     }
+
+    //创建threadLocal对象
+    private static final ThreadLocal<String> accessThreadLocal = new ThreadLocal<>();
+
+    //添加数据
+    public static void setAccess(String access) {
+        accessThreadLocal.set(access);
+    }
+
+    //获取数据
+    public static String getAccess() {
+        return accessThreadLocal.get();
+    }
+
+    //删除数据
+    public static void removeAccess() {
+        accessThreadLocal.remove();
+    }
+
 }

@@ -12,6 +12,14 @@
 
     <artifactId>common-util</artifactId>
 
+<!--    <dependencies>-->
+<!--        <dependency>-->
+<!--            <groupId>org.zjuvipa.compression</groupId>-->
+<!--            <artifactId>model</artifactId>-->
+<!--            <version>1.0-SNAPSHOT</version>-->
+<!--        </dependency>-->
+<!--    </dependencies>-->
+
     <build>
         <plugins>
             <plugin>

@@ -8,19 +8,26 @@
     <select id="searchAlgorithm" resultType="Algorithm">
         select * from algorithm
     </select>
+    <select id="findAlgoById" resultType="Algorithm">
+        select * from infos where algorithm_id = #{algorithmId}
+    </select>
+
+
+
+
     <insert id="uploadAlgorithm">
-        insert into algorithm (username, name, score, institute, ranking, morfPath, lerfPath, pythonPath, email, info, dateTime, status)
-        values (#{username}, #{name}, #{score}, #{institute}, #{ranking}, #{morfPath}, #{lerfPath}, #{pythonPath}, #{email}, #{info}, #{dateTime}, #{status});
+        insert into infos (username, name, score, institute, ranking, morfPath, lerfPath, pythonPath, email, info, status)
+        values (#{username}, #{name}, #{score}, #{institute}, #{ranking}, #{morfPath}, #{lerfPath}, #{pythonPath}, #{email}, #{info}, #{status});
     </insert>
 
     <update id="algorithmReject" parameterType="integer">
-        UPDATE algorithm
+        UPDATE infos
         SET status = 'Rejected'
         WHERE algorithm_id = #{algorithmId}
     </update>
 
     <update id="algorithmApprove" parameterType="integer">
-        UPDATE algorithm
+        UPDATE infos
         SET status = 'Approved'
         WHERE algorithm_id = #{algorithmId}
     </update>

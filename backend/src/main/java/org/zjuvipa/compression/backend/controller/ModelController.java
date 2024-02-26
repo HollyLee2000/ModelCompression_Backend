@@ -1,17 +1,20 @@
 package org.zjuvipa.compression.backend.controller;
 
 
+import com.alibaba.fastjson.JSON;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
+import org.zjuvipa.compression.common.util.AuthContextUtil;
 import org.zjuvipa.compression.common.util.ResultBean;
+import org.zjuvipa.compression.common.util.User;
+import org.zjuvipa.compression.common.util.UserInfo;
 import org.zjuvipa.compression.model.info.AlgorithmInfo;
 import org.zjuvipa.compression.model.info.DatasetInfo;
 import org.zjuvipa.compression.model.info.ModelInfo;
-import org.zjuvipa.compression.model.info.UserInfo;
 import org.zjuvipa.compression.model.req.*;
 import org.zjuvipa.compression.model.res.AddModelRes;
 import org.zjuvipa.compression.model.res.FindModelRes;
@@ -280,16 +283,17 @@ public class ModelController {
     @CrossOrigin
     @ApiOperation("根据数据集查询模型")
     @PostMapping("findByDataset")
-    public ResultBean<FindModelRes> findModelByUserAndDataset(@RequestBody FindModelByUserAndDatasetReq req, @CookieValue("userTicket")String ticket){
+    public ResultBean<FindModelRes> findModelByUserAndDataset(@RequestBody FindModelByUserAndDatasetReq req){
         ResultBean<FindModelRes> result = new ResultBean<>();
         HttpSession httpSession = request.getSession();
-        UserInfo userInfo = (UserInfo)httpSession.getAttribute(ticket);
-        if(userInfo == null || !StringUtils.hasText(ticket)) {
-            result.setMsg("用户未登录，请跳转login页面");
-            result.setCode(ResultBean.NO_PERMISSION);
-            result.setData(null);
-            return result;
-        }
+//        UserInfo userInfo = (UserInfo)httpSession.getAttribute(ticket);
+//        if(userInfo == null || !StringUtils.hasText(ticket)) {
+//            result.setMsg("用户未登录，请跳转login页面");
+//            result.setCode(ResultBean.NO_PERMISSION);
+//            result.setData(null);
+//            return result;
+//        }
+        UserInfo userInfo = AuthContextUtil.getUserInfo();
         if(userInfo.getAuthority() > 0 && !req.getUsername().equals(userInfo.getUsername())){//非管理员无权限查看别的用户的历史记录
             result.setMsg("无权限查看该用户历史记录！");
             result.setCode(ResultBean.FAIL);

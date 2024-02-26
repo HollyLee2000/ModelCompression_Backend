@@ -1,8 +1,6 @@
-package org.zjuvipa.compression.model.info;
+package org.zjuvipa.compression.common.util;
 
 import lombok.Data;
-import org.zjuvipa.compression.model.entity.User;
-import org.zjuvipa.compression.common.util.MyBeanUtils;
 
 @Data
 public class UserInfo {

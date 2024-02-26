@@ -5,6 +5,11 @@
         insert into history
         values (0,#{historyName},#{algoId},#{algoName},#{username},#{datasetId},#{datasetName},#{modelPath},#{dateTime})
     </insert>
+<!--    and (morfPath='leaderboard' or morfPath='pruning task' or morfPath='upload task')-->
+    <select id="findHistoriesByUserNew" resultType="Info">
+        select * from infos
+        where username=#{username};
+    </select>
     <select id="findHistoriesByUser" resultType="History">
         select * from history
         <where>
@@ -27,28 +32,53 @@
         </where>
         order by history_id DESC
     </select>
-    <select id="findAllHistories" resultType="History">
-        select * from algorithm
+    <select id="findHistories" resultType="History">
+        select * from history
+        <where>
+            <if test="model != null and model != ''">
+                and model_name like concat('%',#{model},'%')
+            </if>
+            <if test="type != null and type != ''">
+                and task_type = #{type}
+            </if>
+            <if test="client != null and client != ''">
+                and client = #{client}
+            </if>
+            <if test="createTimeBegin != null and createTimeBegin != ''">
+                and submit_time >= #{createTimeBegin}
+            </if>
+            <if test="createTimeEnd != null and createTimeEnd != ''">
+                and submit_time &lt;= #{createTimeEnd}
+            </if>
+        </where>
+        order by history_id DESC
+    </select>
+
+
+
+
+    <select id="findAllHistories" resultType="Info">
+        select * from infos
     </select>
     <insert id="uploadHistory">
         insert into history (model_name, task_type, checkpoint_path, username, submit_time, status, params_change, flops_change, acc_change, loss_change, pruned_path, structure_before_pruned, structure_after_pruned, log_path)
         values (#{modelname}, #{tasktype}, #{checkpointpath}, #{username}, #{submittime}, #{status}, #{paramschange}, #{flopschange}, #{accchange}, #{losschange}, #{prunedpath}, #{structurebeforepruned}, #{structureafterpruned}, #{logpath});
     </insert>
-    <insert id="uploadTrainingHistory">
-        insert into history (model_name, task_type, checkpoint_path, username, submit_time, status, params_change, flops_change, acc_change, loss_change, pruned_path, structure_before_pruned, structure_after_pruned, log_path,
+    <insert id="uploadTrainingHistory" keyProperty="historyId" useGeneratedKeys="true">
+        insert into history (model_name, task_type, checkpoint_path, username, status, params_change, flops_change, acc_change, loss_change, pruned_path, structure_before_pruned, structure_after_pruned, log_path,
         is_training, tot_epoch, current_epoch, script, client, importance, importance_link, pruner, pruner_link)
-        values (#{modelname}, #{tasktype}, #{checkpointpath}, #{username}, #{submittime}, #{status}, #{paramschange}, #{flopschange}, #{accchange}, #{losschange},
-        #{prunedpath}, #{structurebeforepruned}, #{structureafterpruned}, #{logpath}, #{istrain}, #{totepoch}, #{currentepoch}, #{script}, #{client}, #{algoname}, #{algolink},
-        #{sparsename}, #{sparselink});
+        values (#{modelName}, #{taskType}, #{checkpointPath}, #{username}, #{status}, #{paramsChange}, #{flopsChange}, #{accChange}, #{lossChange},
+        #{prunedPath}, #{structureBeforePruned}, #{structureAfterPruned}, #{logPath}, #{isTraining}, #{totEpoch}, #{currentEpoch}, #{script}, #{client}, #{importance}, #{importanceLink},
+        #{pruner}, #{prunerLink});
     </insert>
 
 <!--    String algoname, String algolink, String sparsename, String sparselink-->
 
-    <insert id="uploadUploadingHistory">
-        insert into history (model_name, task_type, checkpoint_path, username, submit_time, status, params_change, flops_change, acc_change, loss_change, pruned_path, structure_before_pruned, structure_after_pruned, log_path,
+    <insert id="uploadUploadingHistory" keyProperty="historyId" useGeneratedKeys="true">
+        insert into history (model_name, task_type, checkpoint_path, username, status, params_change, flops_change, acc_change, loss_change, pruned_path, structure_before_pruned, structure_after_pruned, log_path,
         is_training, tot_epoch, current_epoch, script, client, dataset, usrModelName, importance, importance_link, pruner, pruner_link)
-        values (#{modelname}, #{tasktype}, #{checkpointpath}, #{username}, #{submittime}, #{status}, #{paramschange}, #{flopschange}, #{accchange}, #{losschange},
-        #{prunedpath}, #{structurebeforepruned}, #{structureafterpruned}, #{logpath}, #{istrain}, #{totepoch}, #{currentepoch}, #{script}, #{client}, #{dataset}, #{usrModelName},
+        values (#{modelName}, #{taskType}, #{checkpointPath}, #{username}, #{status}, #{paramsChange}, #{flopsChange}, #{accChange}, #{lossChange},
+        #{prunedPath}, #{structureBeforePruned}, #{structureAfterPruned}, #{logPath}, #{isTraining}, #{totEpoch}, #{currentEpoch}, #{script}, #{client}, #{dataset}, #{usrModelName},
         "N/A", "N/A", "N/A", "N/A");
     </insert>
     <select id="findHistoryByName" resultType="History">
@@ -76,4 +106,15 @@
         set history_name=#{param2}
         where history_id=#{param1}
     </update>
+    <update id="setStatusWaiting">
+        update history
+        set status='Waiting'
+        where history_id=#{algorithmId}
+    </update>
+    <update id="setStatusRejected">
+        update history
+        set status='Rejected'
+        where history_id=#{algorithmId}
+    </update>
+
 </mapper>

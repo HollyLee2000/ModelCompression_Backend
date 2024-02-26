@@ -15,6 +15,7 @@ public class HistoryInfo implements Serializable {
     private String checkpointPath;
     private String username;
     private String submitTime;
+    private String finishTime;
     private String status;
     private String paramsChange;
     private String flopsChange;

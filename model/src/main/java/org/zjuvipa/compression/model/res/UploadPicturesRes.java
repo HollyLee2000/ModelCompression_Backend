@@ -7,4 +7,5 @@ public class UploadPicturesRes {
 
     private boolean succeed;
     private String imgpath;
+    private Integer taskId;
 }

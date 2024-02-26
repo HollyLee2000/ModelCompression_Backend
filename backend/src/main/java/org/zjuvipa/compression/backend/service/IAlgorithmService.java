@@ -17,7 +17,8 @@ public interface IAlgorithmService extends IService<Algorithm> {
     public List<AlgorithmInfo> searchAlgorithm();
     public List<AlgorithmInfo> findAlgoByName(String algorithmName);
     public boolean uploadAlgorithm(String username, String name, Double score, String institute, Integer ranking, String morfPath,
-                                   String lerfPath, String pythonPath, String email, String info, String dateTime, String status);
+                                   String lerfPath, String pythonPath, String email, String info, String status);
     public boolean algorithmReject(Integer algorithmId);
     public boolean algorithmApprove(Integer algorithmId);
+    public List<Algorithm> findAlgoById(Integer algorithmId);
 }
