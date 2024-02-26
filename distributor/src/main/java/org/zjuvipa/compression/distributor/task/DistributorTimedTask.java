@@ -148,14 +148,18 @@ public class DistributorTimedTask {
                     ObjectNode rootNode = (ObjectNode) mapper.readTree(jsonFile);
                     // 2. 在 JSON 结构中查找满足条件的节点
                     boolean found = false;
+                    System.out.println("数据集是"+dataset);
+                    System.out.println("模型是"+model);
                     ArrayNode childrenArray = rootNode.withArray("children");
                     for (int i = 0; i < childrenArray.size(); i++) {
                         ObjectNode datasetNode = (ObjectNode) childrenArray.get(i);
                         if (datasetNode.get("name").asText().equals(dataset)) {
+                            System.out.println("找到了数据集的对应节点");
                             ArrayNode modelsArray = datasetNode.withArray("children");
                             for (int j = 0; j < modelsArray.size(); j++) {
                                 ObjectNode modelNode = (ObjectNode) modelsArray.get(j);
                                 if (modelNode.get("name").asText().equals(model)) {
+                                    System.out.println("找到了模型的对应节点");
                                     // 3. 添加一个新节点
                                     ObjectNode taskNode = (ObjectNode) modelsArray.get(j);
                                     ArrayNode taskArray = taskNode.withArray("children");
@@ -180,16 +184,29 @@ public class DistributorTimedTask {
                             }
                         }
                     }
+                    if (found){
+                        System.out.println("找到了对应节点");
+                    }else{
+                        System.out.println("没有找到对应节点");
+                    }
                     // 4. 将修改后的 JSON 结构重新写入文件
                     writer.writeValue(jsonFile, rootNode);
                 }catch(Exception e){
                     System.out.println("模型上传并校验成功，但是修改json文件失败！！");
                     iHistoryService.setTaskIsFailed(history.getHistoryId());
                 }
-
             }
-            boolean uploaded = iHistoryService.SyncHistory(info.getTaskId(), info.getStatus(), info.getParamsChange(), info.getFlopsChange(), info.getAccChange(),
-                    info.getLossChange(), info.getPrunedPath(), info.getStructureAfterPruned(), info.getLogPath(), info.getTotEpoch(), info.getCurrentEpoch());
+            boolean uploaded;
+            if(info.getStatus().contains("completed")){
+                System.out.println("任务成功结束");
+                uploaded = iHistoryService.SyncHistoryWithFinishTime(info.getTaskId(), info.getStatus(), info.getParamsChange(), info.getFlopsChange(), info.getAccChange(),
+                        info.getLossChange(), info.getPrunedPath(), info.getStructureAfterPruned(), info.getLogPath(), info.getTotEpoch(), info.getCurrentEpoch());
+
+            }else{
+                System.out.println("任务还在继续");
+                uploaded = iHistoryService.SyncHistory(info.getTaskId(), info.getStatus(), info.getParamsChange(), info.getFlopsChange(), info.getAccChange(),
+                        info.getLossChange(), info.getPrunedPath(), info.getStructureAfterPruned(), info.getLogPath(), info.getTotEpoch(), info.getCurrentEpoch());
+            }
             if(uploaded){
                 System.out.println("已同步任务信息！");
             }
@@ -204,10 +221,10 @@ public class DistributorTimedTask {
         FindHistoryRes histories = new FindHistoryRes();
         List<HistoryInfo> result = iHistoryService.findTrainingTask();
         if(result==null){
-            System.out.println("所有任务已分发");
+            System.out.println("所有要训练的任务已分发");
         }else{
             histories.setHistoryInfos(result);
-            System.out.println("查询到需要训练的记录： ");
+            System.out.println("查询到需要训练的记录: ");
             for(HistoryInfo info: histories.getHistoryInfos()){
                 System.out.println(info);
                 String client = info.getClient();

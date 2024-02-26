@@ -3,7 +3,7 @@
 <mapper namespace="org.zjuvipa.compression.distributor.mapper.DistributorHistoryMapper">
     <select id="findTrainingTask" resultType="History">
         select * from history
-        where is_training=1
+        where is_training=1 and status='Waiting'
     </select>
     <select id="findHistoryById" resultType="History">
         select * from history
@@ -45,6 +45,14 @@
         set status=#{status}, params_change=#{paramschange}, flops_change=#{flopschange}, acc_change=#{accchange},
         loss_change=#{losschange}, pruned_path=#{prunedpath}, structure_after_pruned=#{structureafterpruned},
         log_path=#{logpath}, tot_epoch=#{totepoch}, current_epoch=#{currentepoch}
+        where history_id=#{taskid};
+    </update>
+
+    <update id="SyncHistoryWithFinishTime">
+        update history
+        set status=#{status}, params_change=#{paramschange}, flops_change=#{flopschange}, acc_change=#{accchange},
+        loss_change=#{losschange}, pruned_path=#{prunedpath}, structure_after_pruned=#{structureafterpruned},
+        log_path=#{logpath}, tot_epoch=#{totepoch}, current_epoch=#{currentepoch}, finish_time=CURRENT_TIMESTAMP
         where history_id=#{taskid};
     </update>
 </mapper>

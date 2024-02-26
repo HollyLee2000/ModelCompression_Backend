@@ -6,4 +6,5 @@ import org.zjuvipa.compression.model.info.UserInfo;
 @Data
 public class LoginRes {
     private UserInfo userInfo;
+    private String token;
 }

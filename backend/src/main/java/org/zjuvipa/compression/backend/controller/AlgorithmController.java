@@ -12,18 +12,15 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import org.springframework.web.bind.annotation.RestController;
+import org.zjuvipa.compression.backend.service.*;
 import org.zjuvipa.compression.common.util.ResultBean;
+import org.zjuvipa.compression.model.entity.Algorithm;
 import org.zjuvipa.compression.model.entity.GPUInfo;
 import org.zjuvipa.compression.model.info.*;
 import org.zjuvipa.compression.model.req.*;
 import org.zjuvipa.compression.model.res.*;
-import org.zjuvipa.compression.backend.service.IAlgorithmService;
-import org.zjuvipa.compression.backend.service.IModelService;
-import org.zjuvipa.compression.backend.service.IPictureDataService;
 
 import org.springframework.web.bind.annotation.*;
-
-import org.zjuvipa.compression.backend.service.IDatasetService;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -61,6 +58,10 @@ public class AlgorithmController {
 
     @Autowired
     IModelService iModelService;
+
+    @Autowired
+    IHistoryService iHistoryService;
+
     @Resource
     private HttpServletRequest request;
 
@@ -139,6 +140,20 @@ public class AlgorithmController {
         ResultBean<UploadPicturesRes> result = new ResultBean<>();
         UploadPicturesRes res = new UploadPicturesRes();
         System.out.println("algorithmId: "+algorithmId.toString());
+
+
+        List<Algorithm> algorithms = iAlgorithmService.findAlgoById(algorithmId);
+        Algorithm algorithm = algorithms.get(0);
+        String status = algorithm.getMorfPath();
+        Integer task_id = algorithm.getRanking();
+        if(status.equals("pruning task")||status.equals("upload task")){
+            System.out.println("统一普通用户上传剪枝任务");
+            iHistoryService.setStatusRejected(task_id);
+        }else{
+            System.out.println("其他任务");
+        }
+
+
         res.setSucceed(iAlgorithmService.algorithmReject(algorithmId));
         result.setData(res);
         result.setMsg("上传成功");
@@ -160,26 +175,42 @@ public class AlgorithmController {
 
 
 
-        String command = "python /nfs3-p1/duanjr/meta-score-attribution-hollylee/update_meta.py --username "
-                 + req.getUsername()  + " --institute " + req.getInstitute() + " --name " + req.getName() + " --new_morf " + req.getMorf() + " --new_lerf " + req.getLerf();
-
-
-        System.out.println("command: " + command);
-
-        Process process1 = Runtime.getRuntime().exec(command);
-        BufferedReader in = new BufferedReader(new InputStreamReader(process1.getInputStream()));
-        List<String> lines = new ArrayList<String>();
-        String line;
-        while ((line = in.readLine()) != null) {
-            lines.add(line);
-        }
-        process1.waitFor();
-
-        System.out.println("Point 2");
-        System.out.println("lines[0]: " + lines.get(0));
+//        String command = "python /nfs3-p1/duanjr/meta-score-attribution-hollylee/update_meta.py --username "
+//                 + req.getUsername()  + " --institute " + req.getInstitute() + " --name " + req.getName() + " --new_morf " + req.getMorf() + " --new_lerf " + req.getLerf();
+//
+//
+//        System.out.println("command: " + command);
+//
+//        Process process1 = Runtime.getRuntime().exec(command);
+//        BufferedReader in = new BufferedReader(new InputStreamReader(process1.getInputStream()));
+//        List<String> lines = new ArrayList<String>();
+//        String line;
+//        while ((line = in.readLine()) != null) {
+//            lines.add(line);
+//        }
+//        process1.waitFor();
+//
+//        System.out.println("Point 2");
+//        System.out.println("lines[0]: " + lines.get(0));
 
 
 //        process1.waitFor();
+
+        List<Algorithm> algorithms = iAlgorithmService.findAlgoById(algorithmId);
+        System.out.println("algorithms"+algorithms);
+        Algorithm algorithm = algorithms.get(0);
+        System.out.println("algorithm"+algorithm);
+        String status = algorithm.getMorfPath();
+        Integer task_id = algorithm.getRanking();
+        if(status.equals("pruning task")||status.equals("upload task")){
+            System.out.println("统一普通用户上传剪枝任务");
+            iHistoryService.setStatusWaiting(task_id);
+        }else{
+            System.out.println("其他任务");
+        }
+
+
+//        String status, int task_id
 
         res.setSucceed(iAlgorithmService.algorithmApprove(algorithmId));
         result.setData(res);
@@ -267,9 +298,6 @@ public class AlgorithmController {
                 }
                 ss.close();
             }else if(dataset.equals("coco")){
-
-
-
                 Map<Integer, Integer> intToIntMap = new HashMap<>();
                 intToIntMap.put(128, 20);
                 intToIntMap.put(64, 40);
@@ -301,10 +329,6 @@ public class AlgorithmController {
                     resolvedNum.put("current", Num);
                 }
                 ss.close();
-
-
-
-
             }
 
         }

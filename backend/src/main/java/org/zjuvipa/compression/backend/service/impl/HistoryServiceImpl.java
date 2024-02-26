@@ -6,8 +6,10 @@ import com.github.pagehelper.PageInfo;
 import org.springframework.stereotype.Service;
 import org.zjuvipa.compression.backend.service.IHistoryService;
 import org.zjuvipa.compression.model.entity.History;
+import org.zjuvipa.compression.model.entity.Info;
 import org.zjuvipa.compression.model.info.HistoryInfo;
 import org.zjuvipa.compression.backend.mapper.HistoryMapper;
+import org.zjuvipa.compression.model.info.InfoInfo;
 import org.zjuvipa.compression.model.req.FindHistoriesByUserReq;
 
 import javax.annotation.Resource;
@@ -51,25 +53,42 @@ public class HistoryServiceImpl extends ServiceImpl<HistoryMapper, History> impl
     }
 
     @Override
-    public boolean uploadTrainingHistory(String modelname, String tasktype, String checkpointpath, String username, String submittime,
-                                         String status, String paramschange, String flopschange, String accchange, String losschange, String prunedpath,
-                                         String structurebeforepruned, String structureafterpruned, String logpath, int istrain, int totepoch,
-                                         int currentepoch, String script, String client, String algoname, String algolink, String sparsename, String sparselink) {
-        historyMapper.uploadTrainingHistory(modelname, tasktype, checkpointpath, username, submittime, status, paramschange,
-                flopschange, accchange, losschange, prunedpath, structurebeforepruned, structureafterpruned, logpath, istrain, totepoch,
-                currentepoch, script, client, algoname, algolink, sparsename, sparselink);
+    public void setStatusWaiting(Integer historyId) {
+        historyMapper.setStatusWaiting(historyId);
+    }
+
+    public void setStatusRejected(Integer historyId){
+        historyMapper.setStatusRejected(historyId);
+    }
+
+//    String modelname, String tasktype, String checkpointpath, String username, String submittime,
+//    String status, String paramschange, String flopschange, String accchange, String losschange, String prunedpath,
+//    String structurebeforepruned, String structureafterpruned, String logpath, int istrain, int totepoch,
+//    int currentepoch, String script, String client, String algoname, String algolink, String sparsename, String sparselink
+
+    @Override
+    public boolean uploadTrainingHistory(History history) {
+        historyMapper.uploadTrainingHistory(history);
         return true;
     }
 
     @Override
-    public boolean uploadUploadingHistory(String modelname, String tasktype, String checkpointpath, String username, String submittime,
-                                         String status, String paramschange, String flopschange, String accchange, String losschange, String prunedpath,
-                                         String structurebeforepruned, String structureafterpruned, String logpath, int istrain, int totepoch,
-                                         int currentepoch, String script, String client, String dataset, String usrModelName) {
-        historyMapper.uploadUploadingHistory(modelname, tasktype, checkpointpath, username, submittime, status, paramschange,
-                flopschange, accchange, losschange, prunedpath, structurebeforepruned, structureafterpruned, logpath, istrain, totepoch,
-                currentepoch, script, client, dataset, usrModelName);
+    public boolean uploadUploadingHistory(History history) {
+        historyMapper.uploadUploadingHistory(history);
         return true;
+    }
+
+    @Override
+    public List<InfoInfo> findHistoriesByUserNew(String username){
+        List<Info> histories =  historyMapper.findHistoriesByUserNew(username);
+        List<InfoInfo> historyInfos = new ArrayList<>();
+        if(histories.size()>0) {
+            for(Info history : histories){
+                historyInfos.add(history.change());
+            }
+            return historyInfos;
+        }
+        return null;
     }
 
 
@@ -95,11 +114,23 @@ public class HistoryServiceImpl extends ServiceImpl<HistoryMapper, History> impl
     }
 
     @Override
-    public List<HistoryInfo> findAllHistories(String username) {
-        List<History> histories =  historyMapper.findAllHistories(username);
-        List<HistoryInfo> historyInfos = new ArrayList<>();
+    public PageInfo<History> findHistories(Integer pageNum, Integer pageSize, FindHistoriesByUserReq req){
+        PageHelper.startPage(pageNum,pageSize);
+        List<History> histories =  historyMapper.findHistories(req);
+        System.out.println("装页前数据：" + histories);
+        PageInfo<History> pageInfo = new PageInfo<>(histories);
+        System.out.println("装页后数据：" + pageInfo);
+        return pageInfo;
+    }
+
+
+
+    @Override
+    public List<InfoInfo> findAllHistories(String username) {
+        List<Info> histories =  historyMapper.findAllHistories(username);
+        List<InfoInfo> historyInfos = new ArrayList<>();
         if(histories.size()>0) {
-            for(History history : histories){
+            for(Info history : histories){
                 historyInfos.add(history.change());
             }
             return historyInfos;

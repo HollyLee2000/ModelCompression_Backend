@@ -1,6 +1,7 @@
 package org.zjuvipa.compression.backend.controller;
 
 
+import com.alibaba.fastjson.JSON;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -13,6 +14,7 @@ import com.google.code.kaptcha.impl.DefaultKaptcha;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
@@ -21,6 +23,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.zjuvipa.compression.common.util.*;
 import org.zjuvipa.compression.common.util.*;
 import org.zjuvipa.compression.common.util.*;
+import org.zjuvipa.compression.model.entity.History;
 import org.zjuvipa.compression.model.info.UserInfo;
 import org.zjuvipa.compression.model.req.*;
 import org.zjuvipa.compression.model.res.*;
@@ -47,6 +50,7 @@ import java.net.SocketTimeoutException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 import static org.zjuvipa.compression.common.util.Base64Util.encode;
 
@@ -76,6 +80,9 @@ public class UserController {
 
     @Resource
     private HttpServletResponse response;
+
+    @Autowired
+    private RedisTemplate<String,String> redisTemplate;
 
     @Resource
     private HttpServletRequest request;
@@ -201,17 +208,20 @@ public class UserController {
 //        System.out.println(file);
         ResultBean<RegisterRes> result = new ResultBean<>();
         //验证验证码
-        String captcha = (String) request.getSession().getAttribute("captcha");
-        //这里有session丢失导致验证码为null的问题,
-//        if (!StringUtils.hasText(registerReq.getCode())|| !captcha.equals(registerReq.getCode())){
-//            result.setMsg("验证码错误！");
-//            result.setCode(ResultBean.FAIL);
-//            result.setData(null);
-//            return result;
-//        }
+        String captcha = redisTemplate.opsForValue().get("user:validate");
+//        String captcha = (String) request.getSession().getAttribute("captcha");
+        if (!StringUtils.hasText(registerReq.getCode())||!captcha.equals(registerReq.getCode())){
+            result.setMsg("The verification code is wrong!");
+            result.setCode(ResultBean.FAIL);
+            result.setData(null);
+            return result;
+        }
+
+        //5 如果一致，删除redis里面验证码
+        redisTemplate.delete("user:validate");
 // 测试新电脑的push
         if(!StringUtils.hasText(registerReq.getUsername())) {
-            result.setMsg("注册失败！用户名为空");
+            result.setMsg("User name is null!");
             result.setCode(ResultBean.FAIL);
             result.setData(null);
         }
@@ -220,7 +230,7 @@ public class UserController {
             registerRes.setUserInfo(iUserService.findByUsername(registerReq.getUsername()));
             if(registerRes.getUserInfo() != null) {
 //                System.out.println("3");
-                result.setMsg("注册失败！用户名已存在");
+                result.setMsg("User already exist!");
                 result.setCode(ResultBean.FAIL);
                 result.setData(null);
             }
@@ -234,11 +244,11 @@ public class UserController {
                 userInfo.setTelephone(registerReq.getTelephone());
                 userInfo.setAuthority(registerReq.getAuthority());
                 registerRes.setUserInfo(iUserService.addUser(userInfo));
-                result.setMsg("注册成功！");
+                result.setMsg("Success");
                 result.setData(registerRes);
             }
         }
-        System.out.println("注册成功了");
+//        System.out.println("注册成功了");
         return result;
     }
 
@@ -252,8 +262,15 @@ public class UserController {
         //获取验证码文本内容
         String text = defaultKaptcha.createText();
 //        System.out.println("验证码: " + text);
-        //将验证码放到session中
-        request.getSession().setAttribute("captcha",text);
+        //将验证码放到session中(已经废除这种做法，改为用redis)
+//        request.getSession().setAttribute("captcha",text);
+
+
+
+        redisTemplate.opsForValue().set("user:validate", text, 5, TimeUnit.MINUTES);
+
+
+
         //request.getSession().setMaxInactiveInterval(4*60*60);
         //根据文本内容创建图形验证码
         BufferedImage image = defaultKaptcha.createImage(text);
@@ -311,23 +328,34 @@ public class UserController {
 //        System.out.println("Test1");
 //        System.out.println(req);
 //        System.out.println("Test2");
-        //验证验证码
-        String captcha = (String) request.getSession().getAttribute("captcha");
+        //验证验证码，已放弃从session中拿验证码
+//        String captcha = (String) request.getSession().getAttribute("captcha");
+
+        //2 根据获取的redis里面key ，查询redis里面存储验证码
+        // set("user:validate"+key
+        String captcha = redisTemplate.opsForValue().get("user:validate");
+
+
 //        System.out.println(request);
 //        System.out.println(request.getSession());
 //        System.out.println(req.getCode());
 //        System.out.println(captcha);
 
-        //这里有session丢失导致验证码为null的问题
+        //这里有session丢失导致验证码为null的问题（是跨域造成的，现在已经用redis了）
         if (!StringUtils.hasText(req.getCode())||!captcha.equals(req.getCode())){
             result.setMsg("验证码错误！");
             result.setCode(ResultBean.FAIL);
             result.setData(null);
             return result;
         }
+
+        //5 如果一致，删除redis里面验证码
+        redisTemplate.delete("user:validate");
+
         //验证账号密码
         LoginRes loginRes = new LoginRes();
-        loginRes.setUserInfo(iUserService.findByUsername(req.getUsername()));
+        UserInfo userInfo = iUserService.findByUsername(req.getUsername());
+        loginRes.setUserInfo(userInfo);
 //        System.out.println(loginRes);
         if (loginRes.getUserInfo()!=null){
             String salt = loginRes.getUserInfo().getSalt();
@@ -336,9 +364,31 @@ public class UserController {
                 result.setMsg("登陆成功");
                 //生成cookie
                 String userTicket = UUIDUtil.uuid();
-                request.getSession().setAttribute(userTicket, loginRes.getUserInfo());
-                request.getSession().setMaxInactiveInterval(4*60*60);
-                CookieUtil.setCookie(request, response, "userTicket", userTicket, 60*60);
+
+                loginRes.setToken(userTicket);
+
+
+                //8 把登录成功用户信息放到redis里面
+                // key : token   value: 用户信息
+                redisTemplate.opsForValue()
+                        .set("user:login"+userTicket,
+                                JSON.toJSONString(userInfo),
+                                7,
+                                TimeUnit.HOURS);
+
+                //8 单独存储用户权限信息
+                // key : token   value: 用户信息
+                redisTemplate.opsForValue()
+                        .set("user:access"+userTicket,
+                                String.valueOf(userInfo.getAuthority()),
+                                7,
+                                TimeUnit.HOURS);
+
+
+
+//                request.getSession().setAttribute(userTicket, loginRes.getUserInfo());
+//                request.getSession().setMaxInactiveInterval(4*60*60);
+//                CookieUtil.setCookie(request, response, "userTicket", userTicket, 60*60);
 
 //                System.out.println("标签");
 //                System.out.println(Arrays.toString(request.getCookies()));
@@ -492,17 +542,32 @@ public class UserController {
 
         ResultBean<UploadPicturesRes> result = new ResultBean<>();
         UploadPicturesRes res = new UploadPicturesRes();
-        DateFormat df = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-        Date date = new Date();
-        String day = df.format(date);  //放弃转换成String, 直接比较date
-        System.out.println("Debug!!!: "+username+" "+req.getModelname()+" "+req.getTasktype()+" "+req.getCheckpointpath()+" "+
-                req.getStatus()+" "+req.getParamschange()+" "+req.getFlopschange()+" "+req.getAccchange()+" "+req.getLosschange()+" "+req.getPrunedpath()+" "+day
-                +" "+req.getStructurebeforepruned()+" "+req.getStructureafterpruned()+" "+req.getLogpath());
+//        DateFormat df = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+//        Date date = new Date();
+//        String day = df.format(date);  //放弃转换成String, 直接比较date
 
-        res.setSucceed(iHistoryService.uploadTrainingHistory(req.getModelname(), req.getTasktype(), req.getCheckpointpath(), username,
-                day, req.getStatus(),req.getParamschange(),req.getFlopschange(),req.getAccchange(),req.getLosschange(), req.getPrunedpath(),
+//        String userAccesss = redisTemplate.opsForValue().get("user:access" + token);
+//        if()
+        String access = AuthContextUtil.getAccess();  //前端区分了，这里权限用不上
+
+
+        System.out.println("Debug!!!: "+username+" "+req.getModelname()+" "+req.getTasktype()+" "+req.getCheckpointpath()+" "+
+                req.getStatus()+" "+req.getParamschange()+" "+req.getFlopschange()+" "+req.getAccchange()+" "+req.getLosschange()+" "+req.getPrunedpath()+" "+req.getStructurebeforepruned()+" "+req.getStructureafterpruned()+" "+req.getLogpath());
+
+//        updateJsonTree
+
+        History history = new History(req.getModelname(), req.getTasktype(), req.getCheckpointpath(), username, req.getStatus(),req.getParamschange(),req.getFlopschange(),req.getAccchange(),req.getLosschange(), req.getPrunedpath(),
                 req.getStructurebeforepruned(), req.getStructureafterpruned(), req.getLogpath(), 1, Integer.parseInt(tot_epoch), 0, req.getScript(), req.getClient(),
-                algo_name.get(criterion), algo_link.get(criterion), sparse_name.get(criterion), sparse_link.get(criterion)));
+                algo_name.get(criterion), algo_link.get(criterion), sparse_name.get(criterion), sparse_link.get(criterion));
+
+        res.setSucceed(iHistoryService.uploadTrainingHistory(history));
+
+        int generatedHistoryId = history.getHistoryId();
+
+        System.out.println("current task id: "+generatedHistoryId);
+
+        res.setTaskId(generatedHistoryId);
+
         //1表示需要训练，2表示已经分发给了客户端
         //3是total epoch, 后期要根据具体数据集更改
 
@@ -522,16 +587,15 @@ public class UserController {
     @PostMapping("/SubmitAlgorithm")
     public ResultBean<UploadPicturesRes> SubmitAlgorithm(@RequestBody SubmitAlgorithmReq req) throws IOException {
         String username = req.getUsername();
-
         ResultBean<UploadPicturesRes> result = new ResultBean<>();
         UploadPicturesRes res = new UploadPicturesRes();
-        DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-        Date date = new Date();
-        String day = df.format(date);
+//        DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+//        Date date = new Date();
+//        String day = df.format(date);
         System.out.println("Debug!!!: "+req.getUsername().toString()+" "+req.getName().toString()+" "+req.getScore().toString()+" "+req.getInstitute().toString()+" "+
                 req.getRanking().toString()+" "+req.getMorfPath().toString()+" "+req.getLerfPath().toString()+" "+req.getPythonPath().toString()+" "+req.getEmail().toString()+" "+req.getInfo().toString());
         res.setSucceed(iAlgorithmService.uploadAlgorithm(req.getUsername(), req.getName(), req.getScore(), req.getInstitute(),
-                req.getRanking(),req.getMorfPath(),req.getLerfPath(),req.getPythonPath(),req.getEmail(),req.getInfo(), day, "In Process"));
+                req.getRanking(),req.getMorfPath(),req.getLerfPath(),req.getPythonPath(),req.getEmail(),req.getInfo(),"In Process"));
         result.setData(res);
         result.setMsg("上传成功");
         return result;
@@ -606,9 +670,9 @@ public class UserController {
 
 
 
-        DateFormat df = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-        Date date = new Date();
-        String day = df.format(date);  //放弃转换成String, 直接比较date
+//        DateFormat df = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+//        Date date = new Date();
+//        String day = df.format(date);  //放弃转换成String, 直接比较date
 
 
 
@@ -630,10 +694,35 @@ public class UserController {
         //检测文件系统中是否存在ckpt这个文件
         File ckptFile = new File(ckpt);
 
-        if(ckptFile.exists()){
-            res.setSucceed(iHistoryService.uploadUploadingHistory(model+"-"+dataset, "Upload Raw Model", ckpt, username,
-                    day, "Waiting", "Params: N/A", "FLOPs: N/A", "Acc: N/A", "Val Loss: N/A", "N/A",
-                    req.getEmail(), "N/A", "N/A", 1, 233, 0, req.getPythonPath(), "NULL", dataset, usrModelName));
+
+
+
+        //updateJsonTree
+
+//        public History(String modelname, String tasktype, String checkpointpath,
+//                String username, String submitTime, String status, String paramschange, String flopschange,
+//                String accchange, String losschange, String prunedpath, String structurebeforepruned,
+//                String structureafterpruned, String logpath, Integer isTraining, Integer totEpoch,
+//                Integer currentEpoch, String script,
+//                String client, String dataset, String usrModelName, String importance, String importanceLink, String pruner, String prunerLink) {
+
+
+            if(ckptFile.exists()){
+
+            History history = new History(model+"-"+dataset, "Upload Raw Model", ckpt, username,
+                    req.getInfo(), "Params: N/A", "FLOPs: N/A", "Acc: N/A", "Val Loss: N/A", "N/A",
+                    req.getEmail(), "N/A", "N/A", 1, 233, 0, req.getPythonPath(), "NULL", dataset, usrModelName);
+
+
+            res.setSucceed(iHistoryService.uploadUploadingHistory(history));
+
+            int generatedHistoryId = history.getHistoryId();
+
+            System.out.println("current task id: "+generatedHistoryId);
+
+            res.setTaskId(generatedHistoryId);
+
+
             res.setSucceed(true);
             result.setData(res);
             result.setMsg("上传成功");
@@ -948,31 +1037,26 @@ public class UserController {
     //登出功能
     @CrossOrigin
     @ApiOperation("用户退出")
-    @GetMapping("logout")
-    public ResultBean<LoginRes> unLogin( @CookieValue("userTicket")String ticket){
+    @PostMapping("logout")
+    public ResultBean<LoginRes> unLogin(@RequestHeader(name = "userTicket") String token){
 //        System.out.println(Arrays.toString(request.getCookies()));
         ResultBean<LoginRes> result = new ResultBean<>();
-        if(!StringUtils.hasText(ticket)){
-            result.setMsg("无用户登录");
-            result.setCode(ResultBean.NO_PERMISSION);
+        HttpSession httpSession = request.getSession();
+        org.zjuvipa.compression.common.util.UserInfo userInfo = AuthContextUtil.getUserInfo();
+//            System.out.println(httpSession.getId());
+        if(userInfo == null){
+            result.setMsg("用户已退出");
+            result.setCode(ResultBean.FAIL);
             result.setData(null);
         }
         else{
-            HttpSession httpSession = request.getSession();
-            UserInfo userInfo = (UserInfo)httpSession.getAttribute(ticket);
-//            System.out.println(httpSession.getId());
-            if(userInfo == null){
-                result.setMsg("用户已退出");
-                result.setCode(ResultBean.FAIL);
-                result.setData(null);
-            }
-            else{
-                httpSession.removeAttribute(ticket);
-                LoginRes loginRes = new LoginRes();
-                loginRes.setUserInfo(userInfo);
-                result.setData(loginRes);
-                result.setMsg("logout success!");
-            }
+//            httpSession.removeAttribute(ticket);
+            LoginRes loginRes = new LoginRes();
+//            loginRes.setUserInfo(userInfo);  //退出时就不用返回了
+            result.setData(loginRes);
+            redisTemplate.delete("user:login"+token);
+            redisTemplate.delete("user:access"+token);
+            result.setMsg("logout success!");
         }
         return result;
     }
@@ -1006,7 +1090,16 @@ public class UserController {
     @PostMapping("findNoPass")
     public ResultBean<UserRes> findNoPass(@RequestBody UserReq userReq) {
         UserRes userRes = new UserRes();
-        userRes.setUserInfo(iUserService.findByUsername(userReq.getUsername()));
+        UserInfo userInfo = iUserService.findByUsername(userReq.getUsername());
+
+//        org.zjuvipa.compression.common.util.UserInfo userInfo = AuthContextUtil.getUserInfo();  //这样是不行的，还是得放行
+
+
+//        UserInfo userInfo1 = new UserInfo();
+//        MyBeanUtils.copyProperties(userInfo, userInfo1);
+        userRes.setUserInfo(userInfo);  //现在是从当中获取
+
+
         ResultBean<UserRes> result = new ResultBean<>();
         if(userRes.getUserInfo()!=null) {
             System.out.println("查询到有内容");
@@ -1033,45 +1126,38 @@ public class UserController {
     @CrossOrigin
     @ApiOperation("修改密码")
     @PostMapping("updatepwd")
-    public ResultBean<UpdatepwdRes> updatepwd(UpdatepwdReq updatepwdReq, @CookieValue("userTicket")String ticket) {
+    public ResultBean<UpdatepwdRes> updatepwd(UpdatepwdReq updatepwdReq) {
         UpdatepwdRes updatepwdRes = new UpdatepwdRes();
         ResultBean<UpdatepwdRes> result = new ResultBean<>();
-        if(!StringUtils.hasText(ticket)) {
+        //            System.out.println("ticket:"+ticket);
+        HttpSession httpSession = request.getSession();
+        org.zjuvipa.compression.common.util.UserInfo userInfo = AuthContextUtil.getUserInfo();
+        if(userInfo == null) {
             result.setMsg("用户未登录，请跳转login页面");
             result.setCode(ResultBean.NO_PERMISSION);
             result.setData(null);
         }
         else{
-//            System.out.println("ticket:"+ticket);
-            HttpSession httpSession = request.getSession();
-            UserInfo userInfo = (UserInfo)httpSession.getAttribute(ticket);
-            if(userInfo == null) {
-                result.setMsg("用户未登录，请跳转login页面");
-                result.setCode(ResultBean.NO_PERMISSION);
-                result.setData(null);
-            }
-            else{
 //                System.out.println(userInfo.getPassword());
-                updatepwdRes.setUserInfo(iUserService.findByUsername(updatepwdReq.getUsername()));
-                if(updatepwdRes.getUserInfo() != null) {
-                    if(userInfo.getPassword().equals(updatepwdRes.getUserInfo().getPassword())){
-                        String newPwd = MD5Util.formPassToDBPass(updatepwdReq.getNewPassword(), userInfo.getSalt());
-                        iUserService.updateUserPassword(updatepwdReq.getUsername(), newPwd);
-                        updatepwdRes.getUserInfo().setPassword(newPwd);
-                        result.setMsg("修改密码成功！");
-                        result.setData(updatepwdRes);
-                    }
-                    else{
-                        result.setMsg("用户访问错误，请跳转login页面");
-                        result.setCode(ResultBean.NO_PERMISSION);
-                        result.setData(null);
-                    }
+            updatepwdRes.setUserInfo(iUserService.findByUsername(updatepwdReq.getUsername()));
+            if(updatepwdRes.getUserInfo() != null) {
+                if(userInfo.getPassword().equals(updatepwdRes.getUserInfo().getPassword())){
+                    String newPwd = MD5Util.formPassToDBPass(updatepwdReq.getNewPassword(), userInfo.getSalt());
+                    iUserService.updateUserPassword(updatepwdReq.getUsername(), newPwd);
+                    updatepwdRes.getUserInfo().setPassword(newPwd);
+                    result.setMsg("修改密码成功！");
+                    result.setData(updatepwdRes);
                 }
                 else{
-                    result.setMsg("修改密码失败！用户不存在");
-                    result.setCode(ResultBean.FAIL);
+                    result.setMsg("用户访问错误，请跳转login页面");
+                    result.setCode(ResultBean.NO_PERMISSION);
                     result.setData(null);
                 }
+            }
+            else{
+                result.setMsg("修改密码失败！用户不存在");
+                result.setCode(ResultBean.FAIL);
+                result.setData(null);
             }
         }
         return  result;

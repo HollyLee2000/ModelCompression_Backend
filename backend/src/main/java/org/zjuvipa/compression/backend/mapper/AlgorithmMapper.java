@@ -25,11 +25,13 @@ public interface AlgorithmMapper extends BaseMapper<Algorithm> {
     public boolean uploadAlgorithm(@Param("username") String username, @Param("name") String name, @Param("score") Double score,
                                    @Param("institute") String institute, @Param("ranking") Integer ranking, @Param("morfPath") String morfPath,
                                    @Param("lerfPath") String lerfPath, @Param("pythonPath") String pythonPath, @Param("email") String email,
-                                   @Param("info") String info, @Param("dateTime") String dateTime, @Param("status") String status);
+                                   @Param("info") String info, @Param("status") String status);
 
     public boolean algorithmReject(@Param("algorithmId") Integer algorithmId);
 
     public boolean algorithmApprove(@Param("algorithmId") Integer algorithmId);
+
+    public List<Algorithm> findAlgoById(Integer algorithmId);
 
 
 

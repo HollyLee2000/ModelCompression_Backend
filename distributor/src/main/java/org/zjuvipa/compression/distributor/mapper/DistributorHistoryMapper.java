@@ -33,4 +33,9 @@ public interface DistributorHistoryMapper extends BaseMapper<History> {
     public boolean SyncHistory(int taskid, String status, String paramschange, String flopschange,
                                String accchange, String losschange, String prunedpath,
                                String structureafterpruned, String logpath, int totepoch, int currentepoch);
+
+    public boolean SyncHistoryWithFinishTime(int taskid, String status, String paramschange, String flopschange,
+                               String accchange, String losschange, String prunedpath,
+                               String structureafterpruned, String logpath, int totepoch, int currentepoch);
+
 }
