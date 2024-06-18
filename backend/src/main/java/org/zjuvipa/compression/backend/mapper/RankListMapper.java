@@ -21,6 +21,4 @@ public interface RankListMapper extends BaseMapper<rankList> {
     public List<qualitativeList> getQualitativeComparison(String dataset, String model);
 
     public List<leaderboardList> getLeaderboard(String dataset, String model);
-
-
 }

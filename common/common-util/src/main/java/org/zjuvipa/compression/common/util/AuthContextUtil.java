@@ -12,14 +12,13 @@ public class AuthContextUtil {
 
     // 定义获取数据的方法
     public static UserInfo getUserInfo() {
-        return userInfoThreadLocal.get() ;
+        return userInfoThreadLocal.get();
     }
 
     // 删除数据的方法
     public static void removeUserInfo() {
         userInfoThreadLocal.remove();
     }
-
 
     //创建threadLocal对象
     private static final ThreadLocal<User> threadLocal = new ThreadLocal<>();

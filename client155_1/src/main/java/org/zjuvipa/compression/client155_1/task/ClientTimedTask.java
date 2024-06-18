@@ -34,9 +34,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.time.LocalTime;
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 //import java.util.Queue;
@@ -176,8 +174,58 @@ public class ClientTimedTask {
 
 
 
+
+
 //    // 定义定时任务，使用@Scheduled注解指定调度时间表达式
 //    @Scheduled(cron = "0/2 * * * * ?")  //两秒执行一次
+
+//    public int hIndex(int[] citations) {
+//        Arrays.sort(citations, (a, b)->{
+//            return b-a;
+//        });
+//        for(int i: citations){
+//            System.out.println(i);
+//        }
+//
+//        //不能使用基本数据类型
+//        Integer[] arr = {5,4,7,9,2,12,54,21,1};
+//        //降序
+//        Arrays.sort(arr, new Comparator<Integer>() {
+//            //重写compare方法，最好加注解，不加也没事
+//            public int compare(Integer a, Integer b) {
+//                //返回值>0交换
+//                return b-a;
+//            }
+//        });
+//        System.out.println(Arrays.toString(arr));
+//        return 0;
+//    }
+
+
+//    public long findKthSmallest(int[] coins, int k) {
+//        Arrays.sort(coins);
+//        int maxNum = coins[0]*k;
+//        PriorityQueue<LinkedList<Integer>> queue = new PriorityQueue<>((a,b)->{
+//            return a.getFirst()-b.getFirst();
+//        });
+//        for(int coinValue: coins){
+//            LinkedList<Integer> tp= new LinkedList<>();
+//            while(coinValue<=maxNum){
+//                tp.offerLast(coinValue);
+//                coinValue *= 2;
+//            }
+//            queue.offer(tp);
+//        }
+//        int now = 0;
+//        while(now<k){
+//            LinkedList<Integer> nowPeek = queue.poll();
+//            nowPeek.getFirst();
+//            nowPeek.pollFirst();
+//            queue.offer(nowPeek);
+//            now++;
+//        }
+//        return queue.poll().getFirst();
+//    }
 
     @RabbitListener(bindings = @QueueBinding(
             value = @Queue(name = "direct.queue155_1"),
@@ -198,6 +246,7 @@ public class ClientTimedTask {
             } else if (isJson(body, ScriptMessage.class)) {
                 targetType = ScriptMessage.class;
             }else {
+                System.out.println("vipa155_1接收到不支持的消息类型：【" + mess + "】");
                 throw new IllegalArgumentException("不支持的消息类型，目前只支持RabbitMQMessage类、HistoryInfo类和ScriptMessage类！！");
             }
             Object myObject = objectMapper.readValue(body, typeFactory.constructType(targetType));

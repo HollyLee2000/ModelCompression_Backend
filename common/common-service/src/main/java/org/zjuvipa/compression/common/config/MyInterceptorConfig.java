@@ -30,10 +30,6 @@ public class MyInterceptorConfig implements WebMvcConfigurer {
         //data/user_upload
         registry.addResourceHandler("/ckpt/**").addResourceLocations("file:/home/lhl/.cache/torch/hub/checkpoints/");
 
-
-
-
-
     }
 }
 

@@ -163,6 +163,7 @@ public class ClientTimedTask {
         } else if (isJson(body, ScriptMessage.class)) {
             targetType = ScriptMessage.class;
         }else {
+            System.out.println("vipa155_1接收到不支持的消息类型：【" + mess + "】");
             throw new IllegalArgumentException("不支持的消息类型，目前只支持RabbitMQMessage类、HistoryInfo类和ScriptMessage类！！");
         }
         Object myObject = objectMapper.readValue(body, typeFactory.constructType(targetType));

@@ -40,7 +40,9 @@ public class LoginAuthInterceptor implements HandlerInterceptor {
             "/img",
             "/Cifar",
             "/VOC",
-            "/data/uploadCkpt"
+            "/data/uploadCkpt",
+            "/WorkSpace",
+            "/ckpt"
     );
 
     private boolean isAllowedPath(String requestURI) {
