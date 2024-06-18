@@ -35,6 +35,7 @@ public class LoginAuthInterceptor implements HandlerInterceptor {
             "/user/updateJsonTree",
             "/user/findNoPass",
             "/user/getUsrRank",
+            "/user/login",
             "/user/getQualitativeComparison",
             "/user/getLeaderboard",
             "/img",
