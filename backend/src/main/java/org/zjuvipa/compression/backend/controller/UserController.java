@@ -125,6 +125,32 @@ public class UserController {
         sparse_name.put("lamp", "N/A");
         sparse_link.put("lamp", "N/A");
 
+        algo_name.put("cp", "CP");
+        algo_link.put("cp", "https://arxiv.org/abs/1707.06168.pdf");
+        sparse_name.put("cp", "N/A");
+        sparse_link.put("cp", "N/A");
+
+        algo_name.put("thinet", "ThiNet");
+        algo_link.put("thinet", "https://openaccess.thecvf.com/content_ICCV_2017/papers/Luo_ThiNet_A_Filter_ICCV_2017_paper.pdf");
+        sparse_name.put("thinet", "N/A");
+        sparse_link.put("thinet", "N/A");
+
+        algo_name.put("hrank", "HRank");
+        algo_link.put("hrank", "https://arxiv.org/abs/2002.10179.pdf");
+        sparse_name.put("hrank", "N/A");
+        sparse_link.put("hrank", "N/A");
+
+        algo_name.put("obdc", "OBD-C");
+        algo_link.put("obdc", "https://proceedings.mlr.press/v97/wang19g/wang19g.pdf");
+        sparse_name.put("obdc", "N/A");
+        sparse_link.put("obdc", "N/A");
+
+        algo_name.put("fpgm", "FPGM");
+        algo_link.put("fpgm", "https://openaccess.thecvf.com/content_CVPR_2019/papers/He_Filter_Pruning_via_Geometric_Median_for_Deep_Convolutional_Neural_Networks_CVPR_2019_paper.pdf");
+        sparse_name.put("fpgm", "N/A");
+        sparse_link.put("fpgm", "N/A");
+
+
         algo_name.put("slim", "BNScale");
         algo_link.put("slim", "https://arxiv.org/pdf/1708.06519.pdf");
         sparse_name.put("slim", "BNScale");
